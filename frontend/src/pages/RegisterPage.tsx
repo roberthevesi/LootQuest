@@ -6,8 +6,7 @@ export default function RegisterPage() {
     <div className="page-container">
       <div className="content-container">
         <div className="auth-component">
-          <h1>LootQuest</h1>
-          <h2>Register</h2>
+          <img src="src/assets/logo.png" alt="Logo" className="logo" />
           <form className="auth-form">
             <input type="text" placeholder="Name" required />
             <input type="email" placeholder="Email" required />

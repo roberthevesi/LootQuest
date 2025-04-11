@@ -6,8 +6,7 @@ export default function LoginPage() {
     <div className="page-container">
       <div className="content-container">
         <div className="auth-component">
-          <h1>LootQuest</h1>
-          <h2>Login</h2>
+          <img src="src/assets/logo.png" alt="Logo" className="logo" />
           <form className="auth-form">
             <input type="email" placeholder="Email" required />
             <input type="password" placeholder="Password" required />
