@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import "./auth.css";
+import "../styles/auth.css";
 import useWindowWidth from "../hooks/useWindowWidth";
 
 export default function RegisterPage() {
