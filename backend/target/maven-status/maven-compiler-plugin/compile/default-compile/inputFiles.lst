@@ -1,0 +1,7 @@
+C:\git\LootQuest\backend\src\main\java\com\project\lootquest\config\ApplicationConfiguration.java
+C:\git\LootQuest\backend\src\main\java\com\project\lootquest\config\SecurityConfiguration.java
+C:\git\LootQuest\backend\src\main\java\com\project\lootquest\filter\JwtAuthenticationFilter.java
+C:\git\LootQuest\backend\src\main\java\com\project\lootquest\LootquestApplication.java
+C:\git\LootQuest\backend\src\main\java\com\project\lootquest\model\User.java
+C:\git\LootQuest\backend\src\main\java\com\project\lootquest\repository\UserRepository.java
+C:\git\LootQuest\backend\src\main\java\com\project\lootquest\service\JwtService.java
