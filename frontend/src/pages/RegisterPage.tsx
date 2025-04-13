@@ -1,7 +1,11 @@
 import { Link } from "react-router-dom";
 import "./auth.css";
+import useWindowWidth from "../hooks/useWindowWidth";
 
 export default function RegisterPage() {
+  const screenWidth = useWindowWidth();
+  const isMobile = screenWidth < 768;
+
   return (
     <div className="page-container">
       <div className="content-container">
@@ -17,7 +21,7 @@ export default function RegisterPage() {
             Already have an account? <Link to="/login">Login</Link>
           </p>
         </div>
-        <div className="welcome-image-container"></div>
+        {!isMobile && <div className="welcome-image-component"></div>}
       </div>
     </div>
   );
