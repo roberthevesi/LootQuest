@@ -2,7 +2,7 @@ package com.project.lootquest.auth.controller;
 
 import com.project.lootquest.auth.dto.LoginDto;
 import com.project.lootquest.auth.dto.RegisterDto;
-import com.project.lootquest.auth.model.User;
+import com.project.lootquest.auth.entity.User;
 import com.project.lootquest.auth.response.LoginResponse;
 import com.project.lootquest.auth.service.AuthenticationService;
 import com.project.lootquest.auth.service.JwtService;

@@ -2,7 +2,7 @@ package com.project.lootquest.auth.service;
 
 import com.project.lootquest.auth.dto.LoginDto;
 import com.project.lootquest.auth.dto.RegisterDto;
-import com.project.lootquest.auth.model.User;
+import com.project.lootquest.auth.entity.User;
 import com.project.lootquest.auth.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
