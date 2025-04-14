@@ -22,7 +22,7 @@ public class AuthenticationController {
         this.authenticationService = authenticationService;
     }
 
-    @PostMapping("/signup")
+    @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody RegisterDto registerUserDto) {
         User registeredUser = authenticationService.register(registerUserDto);
 
