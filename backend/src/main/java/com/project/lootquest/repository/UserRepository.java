@@ -1,7 +1,7 @@
 package com.project.lootquest.repository;
 
 import org.springframework.data.repository.CrudRepository;
-import com.project.lootquest.model.User;
+import com.project.lootquest.entity.User;
 
 import java.util.Optional;
 
