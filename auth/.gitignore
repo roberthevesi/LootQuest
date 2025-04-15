@@ -1,10 +1,46 @@
-HELP.md
+# Created by https://www.toptal.com/developers/gitignore/api/intellij+java+maven
+# Edit at https://www.toptal.com/developers/gitignore?templates=intellij,java,maven
+
+### IntelliJ IDEA ###
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# User-specific stuff:
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/dictionaries
+.idea/vcs.xml
+.idea/jsLibraryMappings.xml
+
+# Sensitive or high-churn files:
+.idea/dataSources/
+.idea/dataSources.ids
+.idea/dataSources.xml
+.idea/sqlDataSources.xml
+.idea/dynamic.xml
+.idea/uiDesigner.xml
+
+# Gradle:
+.gradle/
+build/
+
+# Maven:
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-### STS ###
+# Logs:
+logs/
+*.log
+
+# Environment variables:
+.env
+*.env
+
+# STS:
 .apt_generated
 .classpath
 .factorypath
@@ -13,25 +49,47 @@ target/
 .springBeans
 .sts4-cache
 
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
-
-### NetBeans ###
+# NetBeans:
 /nbproject/private/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
-build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-### VS Code ###
+# VS Code:
 .vscode/
 
-### Environment variables ###
-.env
-*.env
+# Miscellaneous:
+*.DS_Store
+*.idea
+*.swp
+*.tmp
+*.tmp.*
+*.bak
+*.orig
+*.rej
+*.sublime-project
+*.sublime-workspace
+*.vscode
+*.vscode-workspace
+*.vscode-workspace.json
+*.vscode-workspace.code-workspace
+*.vscode-workspace.json.bak
+*.vscode-workspace.json.orig
+*.vscode-workspace.json.rej
+*.vscode-workspace.json.sublime-project
+*.vscode-workspace.json.sublime-workspace
+*.vscode-workspace.json.tmp
+*.vscode-workspace.json.tmp.*
+*.vscode-workspace.json.vscode
+*.vscode-workspace.json.vscode-workspace
+*.vscode-workspace.json.vscode-workspace.json
+*.vscode-workspace.json.vscode-workspace.json.bak
+*.vscode-workspace.json.vscode-workspace.json.orig
+*.vscode-workspace.json.vscode-workspace.json.rej
+*.vscode-workspace.json.vscode-workspace.json.sublime-project
+*.vscode-workspace.json.vscode-workspace.json.sublime-workspace
+*.vscode-workspace.json.vscode-workspace.json.tmp
+*.vscode-workspace.json.vscode-workspace.json.tmp.*
