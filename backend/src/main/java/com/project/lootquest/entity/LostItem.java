@@ -1,6 +1,5 @@
 package com.project.lootquest.entity;
 
-import com.project.lootquest.model.Location;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,8 +27,11 @@ public class LostItem {
     @Column(name = "photo_url")
     private String photoUrl;
 
-    @Embedded
-    private Location location;
+    @Column(name = "latitude", nullable = false)
+    private Double latitude;
+
+    @Column(name = "longitude", nullable = false)
+    private Double longitude;
 
     @Column(name = "radius", nullable = false)
     private Double radius;
