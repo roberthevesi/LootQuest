@@ -3,6 +3,7 @@ package com.project.lootquest.auth.controller;
 import com.project.lootquest.auth.dto.LoginDto;
 import com.project.lootquest.auth.dto.RegisterDto;
 import com.project.lootquest.auth.entity.User;
+import com.project.lootquest.auth.exception.LoginException;
 import com.project.lootquest.auth.response.LoginResponse;
 import com.project.lootquest.auth.service.AuthenticationService;
 import com.project.lootquest.auth.service.JwtService;
@@ -23,14 +24,19 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody RegisterDto registerUserDto) {
-        User registeredUser = authenticationService.register(registerUserDto);
+    public ResponseEntity<String> register(@RequestBody RegisterDto registerUserDto) {
+        User registeredUser = null;
+        try {
+            registeredUser = authenticationService.register(registerUserDto);
+        } catch (LoginException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
 
-        return ResponseEntity.ok(registeredUser);
+        return ResponseEntity.ok(registeredUser.toString());
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginDto loginUserDto) {
+    public ResponseEntity<String> authenticate(@RequestBody LoginDto loginUserDto) {
         User authenticatedUser = authenticationService.login(loginUserDto);
 
         String jwtToken = jwtService.generateToken(authenticatedUser);
@@ -39,6 +45,6 @@ public class AuthenticationController {
         loginResponse.setToken(jwtToken);
         loginResponse.setExpiresIn(jwtService.getExpirationTime());
 
-        return ResponseEntity.ok(loginResponse);
+        return ResponseEntity.ok(loginResponse.toString());
     }
 }

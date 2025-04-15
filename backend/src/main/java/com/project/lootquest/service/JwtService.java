@@ -17,7 +17,7 @@ import java.util.function.Function;
 @Service
 public class JwtService {
     @Value("${jwt.secret-key}")
-    private static String secretKey;
+    private String secretKey;
     private static final long JWT_EXPIRATION_TIME = 3600000;
 
     public String extractUsername(String token) {

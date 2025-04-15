@@ -1,6 +1,7 @@
 package com.project.lootquest.config;
 
 import com.project.lootquest.repository.UserRepository;
+import com.project.lootquest.service.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,15 +15,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @Configuration
 public class ApplicationConfiguration {
     private final UserRepository userRepository;
+    private final CustomUserDetailsService customUserDetailsService;
 
-    public ApplicationConfiguration(UserRepository userRepository) {
+    public ApplicationConfiguration(UserRepository userRepository, CustomUserDetailsService customUserDetailsService) {
         this.userRepository = userRepository;
-    }
-
-    @Bean
-    UserDetailsService userDetailsService() {
-        return username -> userRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        this.customUserDetailsService = customUserDetailsService;
     }
 
     @Bean
@@ -39,7 +36,7 @@ public class ApplicationConfiguration {
     AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
 
-        authProvider.setUserDetailsService(userDetailsService());
+        authProvider.setUserDetailsService(customUserDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
 
         return authProvider;
