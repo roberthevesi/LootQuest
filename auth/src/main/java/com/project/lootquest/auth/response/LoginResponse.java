@@ -20,12 +20,4 @@ public class LoginResponse {
     public void setExpiresIn(long expiresIn) {
         this.expiresIn = expiresIn;
     }
-
-    @Override
-    public String toString() {
-        return "{" +
-                "token:'" + token + '\'' +
-                ", expiresIn:" + expiresIn +
-                '}';
-    }
 }

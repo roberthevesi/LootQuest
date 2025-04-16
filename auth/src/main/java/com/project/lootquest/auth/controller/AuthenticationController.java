@@ -24,19 +24,19 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody RegisterDto registerUserDto) {
+    public ResponseEntity<User> register(@RequestBody RegisterDto registerUserDto) {
         User registeredUser = null;
         try {
             registeredUser = authenticationService.register(registerUserDto);
         } catch (LoginException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().build();
         }
 
-        return ResponseEntity.ok(registeredUser.toString());
+        return ResponseEntity.ok(registeredUser);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> authenticate(@RequestBody LoginDto loginUserDto) {
+    public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginDto loginUserDto) {
         User authenticatedUser = authenticationService.login(loginUserDto);
 
         String jwtToken = jwtService.generateToken(authenticatedUser);
@@ -45,6 +45,6 @@ public class AuthenticationController {
         loginResponse.setToken(jwtToken);
         loginResponse.setExpiresIn(jwtService.getExpirationTime());
 
-        return ResponseEntity.ok(loginResponse.toString());
+        return ResponseEntity.ok(loginResponse);
     }
 }
