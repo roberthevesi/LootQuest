@@ -6,10 +6,7 @@ import com.project.lootquest.service.LostItemService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,7 +31,34 @@ public class ItemController {
                             .build()
             ));
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error adding lost item: " + e.getMessage());
+            return ResponseEntity.status(500).body(e.getMessage());
         }
     }
+
+    @DeleteMapping("/delete-lost-item")
+    @SecurityRequirement(name = "Bearer Authentication")
+    public ResponseEntity<?> deleteLostItem(
+            @RequestParam Integer id
+    ) {
+        try {
+            lostItemService.deleteLostItem(id);
+            return ResponseEntity.ok("Lost item deleted successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/get-nearby-lost-items")
+    @SecurityRequirement(name = "Bearer Authentication")
+    public ResponseEntity<?> getNearbyLostItems(
+            @RequestParam Double latitude,
+            @RequestParam Double longitude
+    ) {
+        try {
+            return ResponseEntity.ok(lostItemService.getNearbyLostItems(latitude, longitude));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(e.getMessage());
+        }
+    }
+
 }
