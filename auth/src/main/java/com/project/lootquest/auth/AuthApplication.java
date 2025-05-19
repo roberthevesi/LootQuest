@@ -1,13 +1,14 @@
-package com.project.lootquest;
+package com.project.lootquest.auth;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class LootquestApplication {
+public class AuthApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(LootquestApplication.class, args);
+		SpringApplication.run(AuthApplication.class, args);
 	}
+
 
 }
