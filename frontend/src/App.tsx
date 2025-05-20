@@ -1,35 +1,21 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useGeographic } from "ol/proj";
+import { register } from "ol/proj/proj4";
+import proj4 from "proj4";
+import "./App.css";
+import { MapPage } from "./pages/MapPage";
 
 function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+  useGeographic();
+  proj4.defs(
+    "EPSG:32634",
+    "+proj=utm +zone=34 +datum=WGS84 +units=m +no_defs +type=crs"
+  );
+  proj4.defs(
+    "EPSG:32635",
+    "+proj=utm +zone=35 +datum=WGS84 +units=m +no_defs +type=crs"
+  );
+  register(proj4);
+  return <MapPage />;
 }
 
-export default App
+export default App;
