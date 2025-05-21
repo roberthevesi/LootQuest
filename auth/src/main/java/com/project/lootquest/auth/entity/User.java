@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -24,6 +25,7 @@ public class User implements UserDetails {
     private String email;
     private String phoneNumber;
     private String password;
+    private LocalDateTime createdAtDateTime;
 
     public User(String email, String phoneNumber, String password) {
         this.email = email;
