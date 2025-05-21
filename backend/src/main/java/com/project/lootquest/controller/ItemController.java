@@ -1,12 +1,17 @@
 package com.project.lootquest.controller;
 
+import com.project.lootquest.dto.AddFoundItemRequestDto;
 import com.project.lootquest.dto.AddLostItemRequestDto;
 import com.project.lootquest.entity.LostItem;
 import com.project.lootquest.service.LostItemService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @RestController
 @RequiredArgsConstructor
@@ -14,22 +19,13 @@ import org.springframework.web.bind.annotation.*;
 public class ItemController {
     private final LostItemService lostItemService;
 
-    @PostMapping("/add-lost-item")
+    @PostMapping(value = "/add-lost-item", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<?> addLostItem(
-            @RequestBody AddLostItemRequestDto addLostItemRequestDto
+            @ModelAttribute AddLostItemRequestDto addLostItemRequestDto
     ) {
         try {
-            return ResponseEntity.ok(lostItemService.addLostItem(
-                    LostItem.builder()
-                            .userId(addLostItemRequestDto.getUserId())
-                            .description(addLostItemRequestDto.getDescription())
-                            .photoUrl(addLostItemRequestDto.getPhotoUrl())
-                            .latitude(addLostItemRequestDto.getLatitude())
-                            .longitude(addLostItemRequestDto.getLongitude())
-                            .radius(addLostItemRequestDto.getRadius())
-                            .build()
-            ));
+            return ResponseEntity.ok(lostItemService.addLostItem(addLostItemRequestDto));
         } catch (Exception e) {
             return ResponseEntity.status(500).body(e.getMessage());
         }
@@ -48,6 +44,32 @@ public class ItemController {
         }
     }
 
+    @DeleteMapping("/remove-image-from-s3")
+    @SecurityRequirement(name = "Bearer Authentication")
+    public ResponseEntity<?> removeImageFromS3(
+            @RequestParam String url
+    ) {
+        try {
+            lostItemService.removeImageFromS3(url);
+            return ResponseEntity.ok("Image removed successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/resolve-lost-item")
+    @SecurityRequirement(name = "Bearer Authentication")
+    public ResponseEntity<?> resolveLostItem(
+            @RequestParam Integer id
+    ) {
+        try {
+            lostItemService.resolveLostItem(id);
+            return ResponseEntity.ok("Lost item resolved successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(e.getMessage());
+        }
+    }
+
     @GetMapping("/get-nearby-lost-items")
     @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<?> getNearbyLostItems(
@@ -60,5 +82,18 @@ public class ItemController {
             return ResponseEntity.status(500).body(e.getMessage());
         }
     }
+
+    @PostMapping(value = "/add-found-item", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @SecurityRequirement(name = "Bearer Authentication")
+    public ResponseEntity<?> addFoundItem(
+            @ModelAttribute AddFoundItemRequestDto addFoundItemRequestDto
+            ) {
+        try {
+            return ResponseEntity.ok(lostItemService.addFoundItem(addFoundItemRequestDto));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(e.getMessage());
+        }
+    }
+
 
 }
