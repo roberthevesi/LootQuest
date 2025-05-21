@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import "../styles/auth.css";
 import useWindowWidth from "../hooks/useWindowWidth";
+import logo from "../assets/logo.png"
 
 export default function RegisterPage() {
   const screenWidth = useWindowWidth();
@@ -10,7 +11,7 @@ export default function RegisterPage() {
     <div className="page-container">
       <div className="content-container">
         <div className="auth-component">
-          <img src="src/assets/logo.png" alt="Logo" className="logo" />
+          <img src={logo} alt="Logo" className="logo" />
           <form className="auth-form">
             <input type="text" placeholder="Name" required />
             <input type="email" placeholder="Email" required />

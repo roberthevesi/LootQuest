@@ -1,9 +1,11 @@
 import "../styles/home.css";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import ProfilePanel from "../panels/ProfilePanel";
 import ReportSpotPanel from "../panels/ReportSpotPanel";
 
 export default function HomePage() {
+  const navigate = useNavigate();
   const [showProfile, setShowProfile] = useState(false);
   const [showDropIcon, setShowDropIcon] = useState(false);
   const [showReportSpot, setShowReportSpot] = useState(false);
@@ -41,10 +43,10 @@ export default function HomePage() {
           coordinates={fakeCoordinates}
           onClose={() => {
             setShowReportSpot(false);
-            setShowDropIcon(false); // Hide icon when panel closes
+            setShowDropIcon(false);
           }}
           onConfirm={() => {
-            alert("Confirmed!");
+            navigate(`/reportpage/${encodeURIComponent(fakeCoordinates)}`);
             setShowReportSpot(false);
             setShowDropIcon(false);
           }}

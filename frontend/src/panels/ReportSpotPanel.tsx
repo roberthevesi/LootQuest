@@ -1,5 +1,4 @@
-import React from "react";
-import "../styles/reportSpot.css";
+import "../styles/reportspot.css";
 
 interface ReportSpotPanelProps {
   coordinates: string;
