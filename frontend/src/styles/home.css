@@ -40,8 +40,9 @@
   outline: none;
   width: 100%;
   padding: 8px;
-  font-size: 16px;
+  font-size: 17px;
   background: transparent;
+  color: #1a3a49;
 }
 
 .profile-btn {
@@ -91,5 +92,23 @@
   .profile-btn:focus,
   .add-btn:focus {
     outline: none;
+  }
+
+  .drop-icon {
+    position: fixed;
+    top: -100px; /* initial position above screen */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 80px;
+    animation: dropToCenter 0.5s ease-out forwards;
+    z-index: 0;
+  }
+  
+  @keyframes dropToCenter {
+    to {
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
   }
 }

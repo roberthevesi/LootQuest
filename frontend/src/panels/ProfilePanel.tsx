@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import "../styles/profile.css";
 
-export default function ProfilePanel({ onClose }) {
+interface ProfilePanelProps {
+  onClose: () => void;
+}
+
+export default function ProfilePanel({ onClose }: ProfilePanelProps) {
   const [animateIn, setAnimateIn] = useState(false);
   const [closing, setClosing] = useState(false);
   const [showReports, setShowReports] = useState(false);
