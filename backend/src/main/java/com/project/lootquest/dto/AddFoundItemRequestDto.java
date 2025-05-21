@@ -1,18 +1,18 @@
 package com.project.lootquest.dto;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
-@Schema(name = "AddLostItemRequestDto")
-public class AddLostItemRequestDto {
-    private Integer userId;
+public class AddFoundItemRequestDto {
+    private Integer foundByUserId;
+    private Integer lostItemId;
     private String description;
     private MultipartFile photo;
     private Double latitude;

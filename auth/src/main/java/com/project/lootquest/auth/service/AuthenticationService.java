@@ -10,6 +10,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 public class AuthenticationService {
     private final UserRepository userRepository;
@@ -45,7 +47,13 @@ public class AuthenticationService {
             throw new LoginException("A user with the same email already exists.");
         }
 
-        User user = new User(input.getEmail(), input.getPhoneNumber(), passwordEncoder.encode(input.getPassword()));
+        User user = User.builder()
+                .email(input.getEmail())
+                .phoneNumber(input.getPhoneNumber())
+                .password(passwordEncoder.encode(input.getPassword()))
+                .createdAtDateTime(LocalDateTime.now())
+                .build();
+
         return userRepository.save(user);
     }
 
