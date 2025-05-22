@@ -11,7 +11,6 @@ export default function ProfilePanel({ onClose }: ProfilePanelProps) {
   const navigate = useNavigate();
   const [animateIn, setAnimateIn] = useState(false);
   const [closing, setClosing] = useState(false);
-  const [showReports, setShowReports] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => setAnimateIn(true), 10);
@@ -30,8 +29,10 @@ export default function ProfilePanel({ onClose }: ProfilePanelProps) {
 
   return (
     <div className={`profile-page ${animateIn ? "slide-in" : ""} ${closing ? "slide-out" : ""}`}>
+
+      <img src={logo} alt="Logo" className="logo" />
+
       <div className="profile-content">
-        <img src={logo} alt="Logo" className="logo" />
 
         <div className="info-section">
           <p><strong>Name:</strong> John Doe</p>
@@ -40,105 +41,23 @@ export default function ProfilePanel({ onClose }: ProfilePanelProps) {
         </div>
 
         <div className="action-btns-container">
-          <button className="mylostitems-btn" onClick={handleLogOut}>
+          <button className="mylostitems-btn" onClick={() => navigate('/my-lost-items')}>
             My Lost Items
           </button>
 
-          <button className="myfindings-btn" onClick={handleLogOut}>
+          <button className="myfindings-btn" onClick={() => navigate('/my-findings')}>
             My Findings
           </button>
         </div>
 
-        {showReports && (
-          <div className="reports-table-container">
-            <table className="reports-table">
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Headline</th>
-                  <th>Resolved</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>2025-05-01</td>
-                  <td>Water leak near station</td>
-                  <td>Yes</td>
-                </tr>
-                <tr>
-                  <td>2025-05-01</td>
-                  <td>Water leak near station</td>
-                  <td>Yes</td>
-                </tr>
-                <tr>
-                  <td>2025-05-01</td>
-                  <td>Water leak near station</td>
-                  <td>Yes</td>
-                </tr>
-                <tr>
-                  <td>2025-05-01</td>
-                  <td>Water leak near station</td>
-                  <td>Yes</td>
-                </tr>
-                <tr>
-                  <td>2025-05-01</td>
-                  <td>Water leak near station</td>
-                  <td>Yes</td>
-                </tr>
-                <tr>
-                  <td>2025-05-01</td>
-                  <td>Water leak near station</td>
-                  <td>Yes</td>
-                </tr>
-                <tr>
-                  <td>2025-05-01</td>
-                  <td>Water leak near station</td>
-                  <td>Yes</td>
-                </tr>
-                <tr>
-                  <td>2025-05-01</td>
-                  <td>Water leak near station</td>
-                  <td>Yes</td>
-                </tr>
-                <tr>
-                  <td>2025-05-01</td>
-                  <td>Water leak near station</td>
-                  <td>Yes</td>
-                </tr>
-                <tr>
-                  <td>2025-05-01</td>
-                  <td>Water leak near station</td>
-                  <td>Yes</td>
-                </tr>
-                <tr>
-                  <td>2025-04-22</td>
-                  <td>Broken streetlight</td>
-                  <td>No</td>
-                </tr>
-                <tr>
-                  <td>2025-04-15</td>
-                  <td>Pothole on Main Street</td>
-                  <td>Yes</td>
-                </tr>
-                <tr>
-                  <td>2025-04-08</td>
-                  <td>Fallen tree branch</td>
-                  <td>Yes</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        )}
       </div>
 
       <div className="escape-btns-container">
-        <button className="logout-btn" onClick={handleLogOut}>
-          Log Out
-        </button>
+
+        <button className="logout-btn" onClick={handleLogOut}>Log Out</button>
         
-        <button className="return-home-btn" onClick={handleClose}>
-          Return →
-        </button>
+        <button className="return-home-btn" onClick={handleClose}>Return →</button>
+
       </div>
 
     </div>

@@ -46,7 +46,7 @@ export default function HomePage() {
             setShowDropIcon(false);
           }}
           onConfirm={() => {
-            navigate(`/reportpage/${encodeURIComponent(fakeCoordinates)}`);
+            navigate(`/submitreport/${encodeURIComponent(fakeCoordinates)}`);
             setShowReportSpot(false);
             setShowDropIcon(false);
           }}

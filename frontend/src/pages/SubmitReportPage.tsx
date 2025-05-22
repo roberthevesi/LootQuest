@@ -1,11 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { useState } from "react";
-import "../styles/reportpage.css"
+import "../styles/submitreportpage.css"
+import RangeSlider from "../props/RangeSlider";
 
-export default function ReportPage() {
+export default function SubmitReportPage() {
   const navigate = useNavigate();
   const { coordinates } = useParams();
+  const [rangeValue, setRangeValue] = useState<number>(250);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [photo, setPhoto] = useState<string | null>(null);
@@ -29,11 +31,12 @@ export default function ReportPage() {
         <section className="location-section">
           <h2>Location</h2>
           <p className="coordinates-text">{coordinates}</p>
+          <RangeSlider value={rangeValue} onChange={setRangeValue} />
           <div className="location-pic-placeholder"></div>
         </section>
 
         <section className="name-section">
-          <h2>Report Name</h2>
+          <h2>Item Name</h2>
           <input
             type="text"
             value={name}
