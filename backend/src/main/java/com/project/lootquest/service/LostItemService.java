@@ -45,6 +45,7 @@ public class LostItemService {
     public LostItem addLostItem(AddLostItemRequestDto request) {
         LostItem item = LostItem.builder()
                 .userId(request.getUserId())
+                .title(request.getTitle())
                 .description(request.getDescription())
                 .latitude(request.getLatitude())
                 .longitude(request.getLongitude())
@@ -64,15 +65,39 @@ public class LostItemService {
         return lostItemRepository.save(item);
     }
 
+    public ArrayList<LostItem> getYourLostItems(Integer userId) {
+        ArrayList<LostItem> lostItems = new ArrayList<>();
+        try {
+            for (LostItem lostItem : lostItemRepository.findAll()) {
+                if (lostItem.getUserId().equals(userId)) {
+                    lostItems.add(lostItem);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Error while fetching your lost items: " + e.getMessage());
+        }
+
+        return lostItems;
+    }
+
+    public ArrayList<FoundItem> getFindingsByLostItemId(Integer lostItemId) {
+        ArrayList<FoundItem> foundItems = new ArrayList<>();
+        try {
+            for (FoundItem foundItem : foundItemRepository.findAll()) {
+                if (foundItem.getLostItemId().equals(lostItemId)) {
+                    foundItems.add(foundItem);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Error while fetching your found items: " + e.getMessage());
+        }
+
+        return foundItems;
+    }
+
     public String extractKeyFromUrl(String url) {
         return url.substring(url.lastIndexOf("/") + 1);
     }
-
-    public void removeImageFromS3(String url) {
-        String key = extractKeyFromUrl(url);
-        s3Service.deleteFile(key);
-    }
-
 
     public void deleteLostItem(Integer id) {
         try {
@@ -108,16 +133,18 @@ public class LostItemService {
         }
     }
 
-    public ArrayList<LostItem> getNearbyLostItems(Double userLatitude, Double userLongitude) {
-        Double radius = 1.0; // Default radius in km
+    public ArrayList<LostItem> getNearbyLostItems(Integer userId, Double userLatitude, Double userLongitude) {
+        double radius = 0.5; // Default radius in km
 
         ArrayList<LostItem> nearbyLostItems = new ArrayList<>();
         try {
             for (LostItem lostItem : lostItemRepository.findAll()) {
-                if (!lostItem.getIsFound()) {
-                    double distance = calculateDistance(userLatitude, userLongitude, lostItem.getLatitude(), lostItem.getLongitude());
-                    if (distance <= radius) {
-                        nearbyLostItems.add(lostItem);
+                if (!lostItem.getUserId().equals(userId)){
+                    if (!lostItem.getIsFound()) {
+                        double distance = calculateDistance(userLatitude, userLongitude, lostItem.getLatitude(), lostItem.getLongitude());
+                        if (distance <= radius) {
+                            nearbyLostItems.add(lostItem);
+                        }
                     }
                 }
             }
@@ -164,7 +191,6 @@ public class LostItemService {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Item does not match.");
             }
 
-            // Upload photo to S3
             try {
                 String photoUrl = s3Service.uploadFile(addFoundItemRequestDto.getPhoto());
 
@@ -178,6 +204,8 @@ public class LostItemService {
                         .createdAtDateTime(LocalDateTime.now())
                         .build();
 
+                notifyUserOfFoundItem(lostItem.get().getUserId(), lostItem.get().getTitle(), lostItem.get().getPhotoUrl());
+
                 return foundItemRepository.save(newFoundItem);
             } catch (IOException e) {
                 throw new RuntimeException("Photo upload failed", e);
@@ -185,6 +213,12 @@ public class LostItemService {
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error saving found item: " + e.getMessage());
         }
+    }
+
+    private void notifyUserOfFoundItem(Integer userId, String itemTitle, String photoUrl) {
+        // @Radu.Micea
+        // Implement the logic to notify the user about the found item
+        System.out.println("User " + userId + " has been notified about the found item: " + itemTitle + " with photo URL: " + photoUrl);
     }
 
     private boolean checkItemMatches(String lostItemDescription, String lostItemPhoto, String foundItemDescription, String foundItemPhoto) throws IOException {
