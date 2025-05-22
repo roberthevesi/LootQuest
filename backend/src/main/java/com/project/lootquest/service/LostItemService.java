@@ -2,6 +2,7 @@ package com.project.lootquest.service;
 
 import com.project.lootquest.dto.AddFoundItemRequestDto;
 import com.project.lootquest.dto.AddLostItemRequestDto;
+import com.project.lootquest.dto.ChatMessageDto;
 import com.project.lootquest.entity.FoundItem;
 import com.project.lootquest.entity.LostItem;
 import com.project.lootquest.repository.FoundItemRepository;
@@ -20,6 +21,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Optional;
+import org.json.*;
 
 @Service
 @NoArgsConstructor(force = true)
@@ -35,6 +37,9 @@ public class LostItemService {
 
     @Autowired
     private S3Service s3Service;
+
+    @Autowired
+    private GptService gptService;
 
     @Transactional
     public LostItem addLostItem(AddLostItemRequestDto request) {
@@ -153,9 +158,7 @@ public class LostItemService {
             byte[] lostItemPhoto = s3Service.downloadFileAsBytes(lostItem.get().getPhotoUrl());
             String base64Lost = Base64.getEncoder().encodeToString(lostItemPhoto); // use this
 
-            // @Radu.Micea
-            // call GPT item matching API
-            boolean itemMatched = true; // Placeholder for actual matching logic
+            boolean itemMatched = checkItemMatches(lostItemDescription, base64Lost, base64Found);
 
             if (!itemMatched) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Item does not match.");
@@ -183,4 +186,52 @@ public class LostItemService {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error saving found item: " + e.getMessage());
         }
     }
+
+    private boolean checkItemMatches(String lostItemDescription, String lostItemPhoto, String foundItemPhoto) throws IOException {
+        ChatMessageDto systemMessage = new ChatMessageDto(SystemPrompt, null);
+        ChatMessageDto lostItemMessage = new ChatMessageDto("This is the lost item description and optionally photo: " + lostItemDescription, lostItemPhoto);
+        ChatMessageDto foundItemMessage = new ChatMessageDto("This is the found item photo:", foundItemPhoto);
+
+        String response = gptService.getChatCompletion(new ArrayList<ChatMessageDto>() {{
+            add(systemMessage);
+            add(lostItemMessage);
+            add(foundItemMessage);
+        }});
+
+        response = response.replace("```json", "").replace("```", "").trim();
+
+        JSONObject root = new JSONObject(response);
+        boolean matchValue = root.getBoolean("match");
+
+        return matchValue;
+    }
+
+    private static final String SystemPrompt = """
+You are an assistant that determines whether a found item matches a lost item report.  
+You will be given:
+
+- A **text description** of a lost item  
+- A **photo of the found item**  
+- Optionally, a **photo of the lost item**
+
+Your task is to compare these and decide if the **found item is the same as the lost item**.
+
+Always respond with a **valid JSON object** using the following exact schema:
+
+```json
+{
+  "match": true | false,
+  "reason": "string",  
+  "differences": ["string", ...],  
+  "suggestions": ["string", ...]   
+}
+```
+
+### Rules:
+
+- Only set `"match": true` if you are confident the found item is the same as the lost item.
+- If `"match"` is `false`, explain why in `reason` and list visible or logical `differences`.
+- Always include all fields, even if arrays are empty.
+- Output must be strictly valid JSON — no extra text, logging, or notes.
+""".trim();
 }
