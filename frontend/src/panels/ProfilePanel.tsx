@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/profile.css";
+import logo from "../assets/logo.png"
 
 interface ProfilePanelProps {
   onClose: () => void;
 }
 
 export default function ProfilePanel({ onClose }: ProfilePanelProps) {
+  const navigate = useNavigate();
   const [animateIn, setAnimateIn] = useState(false);
   const [closing, setClosing] = useState(false);
   const [showReports, setShowReports] = useState(false);
@@ -15,6 +18,10 @@ export default function ProfilePanel({ onClose }: ProfilePanelProps) {
     return () => clearTimeout(timer);
   }, []);
 
+  const handleLogOut = () => {
+    navigate(`/login`);
+  };
+  
   const handleClose = () => {
     setClosing(true);
     setAnimateIn(false);
@@ -24,15 +31,21 @@ export default function ProfilePanel({ onClose }: ProfilePanelProps) {
   return (
     <div className={`profile-page ${animateIn ? "slide-in" : ""} ${closing ? "slide-out" : ""}`}>
       <div className="profile-content">
+        <img src={logo} alt="Logo" className="logo" />
+
         <div className="info-section">
-          <h2>Profile Section</h2>
           <p><strong>Name:</strong> John Doe</p>
+          <p><strong>Phone Number:</strong> 911</p>
           <p><strong>Email:</strong> john.doe@example.com</p>
         </div>
 
-        <div className="reports-toggle">
-          <button onClick={() => setShowReports(!showReports)}>
-            {showReports ? "Hide Reports History" : "Show Reports History"}
+        <div className="action-btns-container">
+          <button className="mylostitems-btn" onClick={handleLogOut}>
+            My Lost Items
+          </button>
+
+          <button className="myfindings-btn" onClick={handleLogOut}>
+            My Findings
           </button>
         </div>
 
@@ -118,9 +131,16 @@ export default function ProfilePanel({ onClose }: ProfilePanelProps) {
         )}
       </div>
 
-      <button className="return-home-btn" onClick={handleClose}>
-        Return to homepage →
-      </button>
+      <div className="escape-btns-container">
+        <button className="logout-btn" onClick={handleLogOut}>
+          Log Out
+        </button>
+        
+        <button className="return-home-btn" onClick={handleClose}>
+          Return →
+        </button>
+      </div>
+
     </div>
   );
 }

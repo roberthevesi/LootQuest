@@ -14,6 +14,7 @@ export default function RegisterPage() {
           <img src={logo} alt="Logo" className="logo" />
           <form className="auth-form">
             <input type="text" placeholder="Name" required />
+            <input type="tel" placeholder="Phone Number" required />
             <input type="email" placeholder="Email" required />
             <input type="password" placeholder="Password" required />
             <button type="submit">Register</button>

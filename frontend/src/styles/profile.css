@@ -28,9 +28,16 @@
   display: flex;
   flex-direction: column;
 }
+
+.logo {
+  align-self: center;
+  top: 4%;
+  height: 12%;
+  width: auto;
+}
   
 .info-section {
-  margin-bottom: 10px;
+  margin: 26% 0px 10px;
   padding-top: 10px;
   padding-left: 25px;
 }
@@ -44,6 +51,25 @@
   margin-bottom: 10px;
   font-size: 17px;
   color: #000;
+}
+
+.action-btns-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 24%;
+  width: 100%;
+}
+
+.mylostitems-btn,
+.myfindings-btn {
+  background-color: #1a3a49;
+  margin: 10px 0px 10px 0px;
+  width: 70%;
+  height: 40%;
+  color: #e9e1d5;
+  font-size: 17px;
 }
   
 .reports-toggle {
@@ -94,14 +120,30 @@
   top: 0;
   z-index: 2;
 }
-  
+
+.escape-btns-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 5%;
+  width: 100%;
+  margin-bottom: 11%;
+}
+
+.logout-btn,
 .return-home-btn {
-  height: 8%;
-  margin-left: 25px;
-  margin-right: 25px;
-  margin-bottom: 35px;
+  width: 40%;
+  color: #e9e1d5;
   font-size: 17px;
   cursor: pointer;
-  color: #e9e1d5;
+}
+
+.logout-btn {
+  background-color: #963434;
+  margin-left: 5%;
+}
+  
+.return-home-btn {
   background-color: #379634;
+  margin-right: 5%;
 }
