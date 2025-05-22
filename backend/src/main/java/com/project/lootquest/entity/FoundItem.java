@@ -25,7 +25,7 @@ public class FoundItem {
     @Column(name = "lost_item_id", nullable = false)
     private Integer lostItemId;
 
-    @Column(name = "description", nullable = false)
+    @Column(name = "description")
     private String description;
 
     @Column(name = "photo_url")

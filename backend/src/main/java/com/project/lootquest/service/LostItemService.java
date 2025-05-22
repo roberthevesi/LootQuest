@@ -158,7 +158,7 @@ public class LostItemService {
             byte[] lostItemPhoto = s3Service.downloadFileAsBytes(lostItem.get().getPhotoUrl());
             String base64Lost = Base64.getEncoder().encodeToString(lostItemPhoto); // use this
 
-            boolean itemMatched = checkItemMatches(lostItemDescription, base64Lost, base64Found);
+            boolean itemMatched = checkItemMatches(lostItemDescription, base64Lost, foundItemDescription, base64Found);
 
             if (!itemMatched) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Item does not match.");
@@ -187,10 +187,10 @@ public class LostItemService {
         }
     }
 
-    private boolean checkItemMatches(String lostItemDescription, String lostItemPhoto, String foundItemPhoto) throws IOException {
+    private boolean checkItemMatches(String lostItemDescription, String lostItemPhoto, String foundItemDescription, String foundItemPhoto) throws IOException {
         ChatMessageDto systemMessage = new ChatMessageDto(SystemPrompt, null);
         ChatMessageDto lostItemMessage = new ChatMessageDto("This is the lost item description and optionally photo: " + lostItemDescription, lostItemPhoto);
-        ChatMessageDto foundItemMessage = new ChatMessageDto("This is the found item photo:", foundItemPhoto);
+        ChatMessageDto foundItemMessage = new ChatMessageDto("This is the found item photo and optionally description: " + foundItemDescription, foundItemPhoto);
 
         String response = gptService.getChatCompletion(new ArrayList<ChatMessageDto>() {{
             add(systemMessage);
@@ -213,6 +213,7 @@ You will be given:
 - A **text description** of a lost item  
 - A **photo of the found item**  
 - Optionally, a **photo of the lost item**
+- Optionally, a **text description** of the found item
 
 Your task is to compare these and decide if the **found item is the same as the lost item**.
 

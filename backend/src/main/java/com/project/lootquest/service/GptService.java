@@ -50,32 +50,41 @@ public class GptService {
     }
 
     private String constructPayload(List<ChatMessageDto> messages) {
-        StringBuilder payload = new StringBuilder();
-        payload.append("{");
-        payload.append("\"model\": \"gpt-4o-mini\",");
-        payload.append("\"messages\": [");
+        JSONObject payload = new JSONObject();
+        payload.put("model", "gpt-4o-mini");
 
-        List<String> messageBlocks = new ArrayList<>();
+        JSONArray messagesArray = new JSONArray();
 
         for (ChatMessageDto msg : messages) {
-            List<String> contentParts = new ArrayList<>();
+            JSONArray contentArray = new JSONArray();
 
             if (msg.getText() != null && !msg.getText().isEmpty()) {
-                contentParts.add("{\"type\": \"text\", \"text\": \"" + escapeJson(msg.getText()) + "\"}");
+                JSONObject textContent = new JSONObject();
+                textContent.put("type", "text");
+                textContent.put("text", msg.getText());
+                contentArray.put(textContent);
             }
 
             if (msg.getBase64Image() != null && !msg.getBase64Image().isEmpty()) {
-                contentParts.add("{\"type\": \"image_url\", \"image_url\": {\"url\": \"data:image/jpeg;base64," + msg.getBase64Image() + "\"}}");
+                JSONObject imageUrl = new JSONObject();
+                imageUrl.put("url", "data:image/jpeg;base64," + msg.getBase64Image());
+
+                JSONObject imageContent = new JSONObject();
+                imageContent.put("type", "image_url");
+                imageContent.put("image_url", imageUrl);
+
+                contentArray.put(imageContent);
             }
 
-            if (!contentParts.isEmpty()) {
-                messageBlocks.add("{\"role\": \"user\", \"content\": [" + String.join(",", contentParts) + "]}");
+            if (contentArray.length() > 0) {
+                JSONObject messageObject = new JSONObject();
+                messageObject.put("role", "user");
+                messageObject.put("content", contentArray);
+                messagesArray.put(messageObject);
             }
         }
 
-        payload.append(String.join(",", messageBlocks));
-        payload.append("]}");
-
+        payload.put("messages", messagesArray);
         return payload.toString();
     }
 
