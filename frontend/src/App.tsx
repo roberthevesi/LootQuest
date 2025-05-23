@@ -4,6 +4,7 @@ import RegisterPage from './pages/RegisterPage'
 import HomePage from './pages/HomePage'
 import MyFindingsPage from "./pages/MyFindingsPage";
 import MyLostItemsPage from "./pages/MyLostItemsPage";
+import ItemHistoryPage from './pages/ItemHistory';
 import SubmitReportPage from './pages/SubmitReportPage'
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/home" element={<HomePage />} />
       <Route path="/my-lost-items" element={<MyLostItemsPage />} />
+      <Route path="/item-history/:username/:itemname" element={<ItemHistoryPage />} />
       <Route path="/my-findings" element={<MyFindingsPage />} />
       <Route path="/submitreport/:coordinates" element={<SubmitReportPage />} />
     </Routes>

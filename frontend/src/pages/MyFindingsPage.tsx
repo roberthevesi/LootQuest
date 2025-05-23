@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Search } from 'lucide-react';
 import ListItem from '../components/ListItem';
 import { FindingItem } from '../types';
@@ -8,6 +9,7 @@ import "../styles/myfindings.css"
 
 export default function MyFindingsPage() {
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const navigate = useNavigate();
   
   // Hardcoded data - replace with database calls later
   const findings: FindingItem[] = [
@@ -49,6 +51,10 @@ export default function MyFindingsPage() {
     item.owner.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const handleBack = () => {
+    navigate(-1); // Go back to previous page
+  };
+
   return (
     <div className="myfindings-page">
 
@@ -57,14 +63,10 @@ export default function MyFindingsPage() {
       </div>
 
       <div className="findings-content-container">
-        <div className="page-header">
-          <p><strong>My Findings</strong></p>
-        </div>
-
         <div className="searchbar-container">
           <input
             type="text"
-            placeholder="Search lost items..."
+            placeholder="Search found items..."
             value={searchTerm}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
           />
@@ -86,7 +88,10 @@ export default function MyFindingsPage() {
                 </div>
               )}
         </div>
+        <button className="findings-back-btn" onClick={handleBack}>Back</button>
       </div>
+
+      
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Search } from 'lucide-react';
 import ListItem from '../components/ListItem';
 import { LostItem } from '../types';
@@ -8,6 +9,7 @@ import "../styles/mylostitems.css"
 
 export default function MyLostItemsPage() {
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const navigate = useNavigate();
   
   // Hardcoded data - replace with database calls later
   const [lostItems, setLostItems] = useState<LostItem[]>([
@@ -49,6 +51,10 @@ export default function MyLostItemsPage() {
     // TODO: Make API call to delete from database
   };
 
+  const handleBack = () => {
+    navigate(-1); // Go back to previous page
+  };
+
   const filteredLostItems: LostItem[] = lostItems.filter(item =>
     item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     item.location.toLowerCase().includes(searchTerm.toLowerCase())
@@ -62,9 +68,6 @@ export default function MyLostItemsPage() {
       </div>
 
       <div className="lostitems-content-container">
-        <div className="page-header">
-          <p><strong>My Lost Items</strong></p>
-        </div>
 
         <div className="searchbar-container">
           <input
@@ -93,7 +96,9 @@ export default function MyLostItemsPage() {
                 </div>
               )}
         </div>
+        <button className="lostitems-back-btn" onClick={handleBack}>Back</button>
       </div>
+      
     </div>
   );
 }
