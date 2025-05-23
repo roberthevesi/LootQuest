@@ -35,7 +35,6 @@ export default function MapReportPanel({
   return (
     <div className="popup-overlay" onClick={onClose}>
       <div className="popup-container" onClick={(e) => e.stopPropagation()}>
-        {/* Header */}
         <div className="popup-header">
           <h3 className="popup-title">Lost Item Details</h3>
           <button
@@ -47,14 +46,11 @@ export default function MapReportPanel({
           </button>
         </div>
 
-        {/* Scrollable Content */}
         <div className="popup-content">
-          {/* Item Name */}
           <div className="item-name-section">
             <h4 className="item-name">{item.name}</h4>
           </div>
 
-          {/* Photo */}
           {item.photo && (
             <div className="photo-section">
               <img
@@ -66,7 +62,6 @@ export default function MapReportPanel({
             </div>
           )}
 
-          {/* Reporter Info */}
           <div className="info-section">
             <div className="info-row">
               <User className="info-icon user-icon" />
@@ -86,7 +81,6 @@ export default function MapReportPanel({
             </div>
           </div>
 
-          {/* Description */}
           <div className="description-section">
             <div className="description-row">
               <FileText className="info-icon description-icon" />
@@ -99,7 +93,6 @@ export default function MapReportPanel({
             </div>
           </div>
 
-          {/* Location */}
           <div className="location-section">
             <div className="info-row">
               <MapPin className="info-icon location-icon" />
@@ -109,7 +102,6 @@ export default function MapReportPanel({
           </div>
         </div>
 
-        {/* Footer */}
         <div className="popup-footer">
           <button
             onClick={handleReportFound}
