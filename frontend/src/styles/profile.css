@@ -1,0 +1,150 @@
+.profile-page {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: flex-start;
+  align-items: stretch;
+  background-color: #e9e1d5;
+  position: fixed;
+  z-index: 1000;
+  transform: translateX(-100%);
+  transition: transform 300ms ease;
+  flex-direction: column;
+}
+
+.profile-page.slide-in {
+  transform: translateX(0);
+}
+
+.profile-page.slide-out {
+  transform: translateX(-100%);
+}
+
+.profile-content {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.logo {
+  max-height: 12vh;
+  align-self: center;
+  top: 4%;
+  height: 12%;
+  width: auto;
+}
+
+.info-section {
+  margin: 26% 0px 10px;
+  padding-top: 10px;
+  padding-left: 25px;
+}
+
+.info-section h2 {
+  margin-bottom: 15px;
+  color: #970d0d;
+}
+
+.info-section p {
+  margin-bottom: 10px;
+  font-size: 17px;
+  color: #000;
+}
+
+.action-btns-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 24%;
+  width: 100%;
+}
+
+.mylostitems-btn,
+.myfindings-btn {
+  background-color: #1a3a49;
+  margin: 10px 0px 10px 0px;
+  width: 70%;
+  height: 40%;
+  color: #e9e1d5;
+  font-size: 17px;
+}
+
+.reports-toggle {
+  margin-bottom: 15px;
+  padding-left: 25px;
+}
+
+.reports-toggle button {
+  padding: 8px 16px;
+  background-color: #1a3a49;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  color: #e9e1d5;
+}
+
+.reports-toggle button:focus {
+  outline: none;
+}
+
+.reports-table-container {
+  overflow-y: auto;
+  max-height: 80%;
+  margin: 7px 15px 30px;
+  padding: 0 10px;
+  max-width: 90%;
+  width: fit-content;
+}
+
+.reports-table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.reports-table th,
+.reports-table td {
+  border: 1px solid #000000;
+  padding: 8px;
+  text-align: left;
+  color: #000;
+}
+
+.reports-table th {
+  background-color: #990505;
+  color: #e9e1d5;
+  position: sticky;
+  text-align: center;
+  top: 0;
+  z-index: 2;
+}
+
+.escape-btns-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 5%;
+  width: 100%;
+  margin-bottom: 11%;
+}
+
+.logout-btn,
+.return-home-btn {
+  width: 40%;
+  color: #e9e1d5;
+  font-size: 17px;
+  cursor: pointer;
+}
+
+.logout-btn {
+  background-color: #963434;
+  margin-left: 5%;
+}
+
+.return-home-btn {
+  background-color: #379634;
+  margin-right: 5%;
+}

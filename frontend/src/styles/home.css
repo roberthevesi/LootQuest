@@ -1,0 +1,114 @@
+.page-container {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #e9e1d5;
+  position: relative;
+}
+
+.floating-ui {
+  position: absolute;
+  z-index: 10;
+}
+
+.map-container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  background-color: #b33cda;
+}
+
+.search-bar {
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #fff;
+  border-radius: 25px;
+  padding: 8px 16px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  width: 80%;
+  max-width: 400px;
+  z-index: 10;
+}
+
+.search-bar input {
+  border: none;
+  outline: none;
+  width: 100%;
+  padding: 8px;
+  font-size: 17px;
+  background: transparent;
+  color: #1a3a49;
+}
+
+.profile-btn {
+  bottom: 20px;
+  left: 20px;
+  background-color: #1a3a49;
+  border-radius: 30%;
+  height: 10%;
+  width: auto;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+}
+
+.add-btn {
+  bottom: 20px;
+  right: 20px;
+  background-color: #379634;
+  border-radius: 30%;
+  height: 10%;
+  width: auto;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+}
+
+@media (max-width: 768px) {
+  .search-bar {
+      width: 80%;
+      height: 5%;
+      top: 3.5%;
+  }
+
+  .profile-btn,
+  .add-btn {
+      height: 11%;
+      aspect-ratio: 1 / 1;
+      bottom: 4%;
+  }
+
+  .profile-btn {
+      left: 8%;
+  }
+
+  .add-btn {
+      right: 8%;
+  }
+
+  .profile-btn:focus,
+  .add-btn:focus {
+      outline: none;
+  }
+
+  .drop-icon {
+      position: fixed;
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 80px;
+      animation: dropToCenter 0.5s ease-out forwards;
+      z-index: 0;
+  }
+
+  @keyframes dropToCenter {
+      to {
+          top: 50%;
+          transform: translate(-50%, -50%);
+      }
+  }
+}
