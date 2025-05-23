@@ -31,6 +31,30 @@ public class ItemController {
         }
     }
 
+    @GetMapping("/get-your-lost-items")
+    @SecurityRequirement(name = "Bearer Authentication")
+    public ResponseEntity<?> getYourLostItems(
+            @RequestParam Integer userId
+    ) {
+        try {
+            return ResponseEntity.ok(lostItemService.getYourLostItems(userId));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/get-findings-by-lost-item-id")
+    @SecurityRequirement(name = "Bearer Authentication")
+    public ResponseEntity<?> getFindingsByLostItemId(
+            @RequestParam Integer lostItemId
+    ) {
+        try {
+            return ResponseEntity.ok(lostItemService.getFindingsByLostItemId(lostItemId));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(e.getMessage());
+        }
+    }
+
     @DeleteMapping("/delete-lost-item")
     @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<?> deleteLostItem(
@@ -39,19 +63,6 @@ public class ItemController {
         try {
             lostItemService.deleteLostItem(id);
             return ResponseEntity.ok("Lost item deleted successfully");
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body(e.getMessage());
-        }
-    }
-
-    @DeleteMapping("/remove-image-from-s3")
-    @SecurityRequirement(name = "Bearer Authentication")
-    public ResponseEntity<?> removeImageFromS3(
-            @RequestParam String url
-    ) {
-        try {
-            lostItemService.removeImageFromS3(url);
-            return ResponseEntity.ok("Image removed successfully");
         } catch (Exception e) {
             return ResponseEntity.status(500).body(e.getMessage());
         }
@@ -73,11 +84,12 @@ public class ItemController {
     @GetMapping("/get-nearby-lost-items")
     @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<?> getNearbyLostItems(
+            @RequestParam Integer userId,
             @RequestParam Double latitude,
             @RequestParam Double longitude
     ) {
         try {
-            return ResponseEntity.ok(lostItemService.getNearbyLostItems(latitude, longitude));
+            return ResponseEntity.ok(lostItemService.getNearbyLostItems(userId, latitude, longitude));
         } catch (Exception e) {
             return ResponseEntity.status(500).body(e.getMessage());
         }
@@ -94,6 +106,4 @@ public class ItemController {
             return ResponseEntity.status(500).body(e.getMessage());
         }
     }
-
-
 }

@@ -17,5 +17,4 @@ public class AddFoundItemRequestDto {
     private MultipartFile photo;
     private Double latitude;
     private Double longitude;
-    private Double radius;
 }

@@ -126,6 +126,12 @@
 			<version>2.3.1</version> <!-- Use 2.3.1+ for Java 11+, latest is fine -->
 		</dependency>
 
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20250517</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
