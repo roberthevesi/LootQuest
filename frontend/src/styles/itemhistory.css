@@ -5,10 +5,11 @@
     height: 100vh;
     display: flex;
     flex-direction: column;
-    background-color: #FFA770;
+    background-color: #ffa770;
 }
 
-.iteminfo-container h2, p {
+.iteminfo-container h2,
+p {
     margin-bottom: 5px;
 }
 
@@ -85,7 +86,8 @@
     color: #666;
 }
 
-.loading-message, .no-engagement-message {
+.loading-message,
+.no-engagement-message {
     text-align: center;
     padding: 40px 20px;
     color: #666;

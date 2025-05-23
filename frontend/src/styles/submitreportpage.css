@@ -7,14 +7,14 @@
   box-sizing: border-box;
   background-color: #e9e1d5;
 }
-  
+
 .headline {
   font-size: 28px;
   color: #5a0303;
   text-align: left;
   margin-top: 0px;
 }
-  
+
 .report-data {
   flex: 1;
   overflow-y: auto;
@@ -26,17 +26,17 @@
 }
 
 .report-data h2 {
-    margin-top: 0px;
-    margin-bottom: 5px;
-    font-size: 20px;
-    color: black;
+  margin-top: 0px;
+  margin-bottom: 5px;
+  font-size: 20px;
+  color: black;
 }
 
 .report-data p {
-    margin-top: 0px;
-    margin-bottom: 5px;
-    font-size: 16px;
-    color: black;
+  margin-top: 0px;
+  margin-bottom: 5px;
+  font-size: 16px;
+  color: black;
 }
 
 .location-pic-placeholder {
@@ -47,7 +47,7 @@
   border-radius: 8px;
   margin-top: 10px;
 }
-  
+
 input[type="text"],
 textarea {
   width: 100%;
@@ -58,19 +58,19 @@ textarea {
   border-radius: 4px;
   resize: vertical;
 }
-  
+
 .photo-section input[type="file"] {
   background-color: #379634;
 }
-  
+
 .uploaded-photo-preview {
   margin-top: 12px;
   max-width: 100%;
   border-radius: 6px;
-  box-shadow: 0 0 6px rgba(0,0,0,0.1);
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
   display: block;
 }
-  
+
 .submit-report-btn {
   background-color: #1a3a49;
   color: white;
@@ -84,10 +84,10 @@ textarea {
   box-sizing: border-box;
   transition: background-color 0.3s ease;
 }
-  
+
 .submit-report-btn:hover {
-    background-color: #1a3a49;
-  }
+  background-color: #1a3a49;
+}
 
 .submit-report-btn:focus {
   outline: none;
