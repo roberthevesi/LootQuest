@@ -1,12 +1,14 @@
 import "../styles/home.css";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import ProfilePanel from "../panels/ProfilePanel";
 import ReportSpotPanel from "../panels/ReportSpotPanel";
 
 export default function HomePage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [showProfile, setShowProfile] = useState(false);
+  const [disableProfileAnimation, setDisableProfileAnimation] = useState(false);
   const [showDropIcon, setShowDropIcon] = useState(false);
   const [showReportSpot, setShowReportSpot] = useState(false);
 
@@ -16,6 +18,13 @@ export default function HomePage() {
     setShowDropIcon(true);
     setShowReportSpot(true);
   };
+
+  useEffect(() => {
+    if (location.state?.fromListingPage) {
+      setShowProfile(true);
+      window.history.replaceState({}, '');
+    }
+  }, [location.state]);
 
   return (
     <div className="page-container">

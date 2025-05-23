@@ -52,7 +52,7 @@ export default function MyFindingsPage() {
   );
 
   const handleBack = () => {
-    navigate(-1); // Go back to previous page
+    navigate('/home', { state: { fromListingPage: true } }); // Go back to previous page
   };
 
   return (

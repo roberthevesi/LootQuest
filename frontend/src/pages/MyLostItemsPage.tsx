@@ -52,7 +52,7 @@ export default function MyLostItemsPage() {
   };
 
   const handleBack = () => {
-    navigate(-1); // Go back to previous page
+    navigate('/home', { state: { fromListingPage: true } });
   };
 
   const filteredLostItems: LostItem[] = lostItems.filter(item =>

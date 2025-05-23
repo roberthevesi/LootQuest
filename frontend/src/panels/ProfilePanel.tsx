@@ -41,11 +41,11 @@ export default function ProfilePanel({ onClose }: ProfilePanelProps) {
         </div>
 
         <div className="action-btns-container">
-          <button className="mylostitems-btn" onClick={() => navigate('/my-lost-items')}>
+          <button className="mylostitems-btn" onClick={() => navigate('/my-lost-items', { state: { fromListingPage: true } })}>
             My Lost Items
           </button>
 
-          <button className="myfindings-btn" onClick={() => navigate('/my-findings')}>
+          <button className="myfindings-btn" onClick={() => navigate('/my-findings', { state: { fromListingPage: true } })}>
             My Findings
           </button>
         </div>
