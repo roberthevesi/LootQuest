@@ -61,7 +61,7 @@ export default function MyLostItemsPage() {
         <img src={logo} alt="Logo" className="logo" />
       </div>
 
-      <div className="content-container">
+      <div className="lostitems-content-container">
         <div className="page-header">
           <p><strong>My Lost Items</strong></p>
         </div>

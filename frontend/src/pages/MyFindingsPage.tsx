@@ -56,7 +56,7 @@ export default function MyFindingsPage() {
         <img src={logo} alt="Logo" className="logo" />
       </div>
 
-      <div className="content-container">
+      <div className="findings-content-container">
         <div className="page-header">
           <p><strong>My Findings</strong></p>
         </div>

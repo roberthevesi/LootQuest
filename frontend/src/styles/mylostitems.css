@@ -22,7 +22,7 @@
 }
   
   /* Main content container */
-  .content-container {
+  .lostitems-content-container {
     position: fixed;
     display: flex;
     align-items: center;
@@ -30,6 +30,7 @@
     background-color: brown;
     height: 87%;
     bottom: 0%;
+    width: 100%;
   }
   
 
