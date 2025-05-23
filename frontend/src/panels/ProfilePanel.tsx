@@ -12,9 +12,19 @@ export default function ProfilePanel({ onClose }: ProfilePanelProps) {
   const [animateIn, setAnimateIn] = useState(false);
   const [closing, setClosing] = useState(false);
 
+  const [username, setUsername] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [email, setEmail] = useState("");
+
   useEffect(() => {
     const timer = setTimeout(() => setAnimateIn(true), 10);
     return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    setUsername(localStorage.getItem("username") || "N/A");
+    setPhoneNumber(localStorage.getItem("phoneNumber") || "N/A");
+    setEmail(localStorage.getItem("email") || "N/A");
   }, []);
 
   const handleLogOut = () => {
@@ -35,9 +45,9 @@ export default function ProfilePanel({ onClose }: ProfilePanelProps) {
       <div className="profile-content">
 
         <div className="info-section">
-          <p><strong>Name:</strong> John Doe</p>
-          <p><strong>Phone Number:</strong> 911</p>
-          <p><strong>Email:</strong> john.doe@example.com</p>
+          <p><strong>Name:</strong> {username}</p>
+          <p><strong>Phone Number:</strong> {phoneNumber}</p>
+          <p><strong>Email:</strong> {email}</p>
         </div>
 
         <div className="action-btns-container">
