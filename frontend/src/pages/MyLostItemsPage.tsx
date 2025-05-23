@@ -2,13 +2,11 @@ import React, { useState } from 'react';
 import { Search } from 'lucide-react';
 import ListItem from '../components/ListItem';
 import { LostItem } from '../types';
-import useWindowWidth from '../hooks/useWindowWidth';
 import logo from '../assets/logo.png';
 import '../styles/auth.css';
+import "../styles/mylostitems.css"
 
 export default function MyLostItemsPage() {
-  const screenWidth = useWindowWidth();
-  const isMobile = screenWidth < 768;
   const [searchTerm, setSearchTerm] = useState<string>('');
   
   // Hardcoded data - replace with database calls later
@@ -57,44 +55,44 @@ export default function MyLostItemsPage() {
   );
 
   return (
-    <div className="page-container">
-      <div className="content-container">
-        <div className="auth-component">
-          <img src={logo} alt="Logo" className="logo" />
-          <h1 className="text-2xl font-bold text-gray-800 mb-6">My Lost Items</h1>
-          
-          {/* Search Bar */}
-          <div className="relative mb-6 w-full">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-            <input
-              type="text"
-              placeholder="Search lost items..."
-              value={searchTerm}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-          </div>
+    <div className="mylostitems-page">
 
-          {/* Scrollable List */}
-          <div className="w-full max-h-96 overflow-y-auto">
-            {filteredLostItems.length > 0 ? (
-              filteredLostItems.map(item => (
-                <ListItem
-                  key={item.id}
-                  item={item}
-                  type="lost"
-                  onEngagementHistory={handleEngagementHistory}
-                  onDelete={handleDelete}
-                />
-              ))
-            ) : (
-              <div className="text-center text-gray-500 py-8">
-                No lost items match your search.
-              </div>
-            )}
-          </div>
+      <div className="logo-container">
+        <img src={logo} alt="Logo" className="logo" />
+      </div>
+
+      <div className="content-container">
+        <div className="page-header">
+          <p><strong>My Lost Items</strong></p>
         </div>
-        {!isMobile && <div className="welcome-image-component"></div>}
+
+        <div className="searchbar-container">
+          <input
+            type="text"
+            placeholder="Search lost items..."
+            value={searchTerm}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
+          />
+          <Search className="searchbar"/>
+        </div>
+
+        <div className="list-container">
+          {filteredLostItems.length > 0 ? (
+                filteredLostItems.map(item => (
+                  <ListItem
+                    key={item.id}
+                    item={item}
+                    type="lost"
+                    onEngagementHistory={handleEngagementHistory}
+                    onDelete={handleDelete}
+                  />
+                ))
+              ) : (
+                <div className="text-center text-gray-500 py-8">
+                  No lost items match your search.
+                </div>
+              )}
+        </div>
       </div>
     </div>
   );
