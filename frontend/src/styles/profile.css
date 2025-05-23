@@ -30,6 +30,7 @@
 }
 
 .logo {
+  max-height: 12vh;
   align-self: center;
   top: 4%;
   height: 12%;
