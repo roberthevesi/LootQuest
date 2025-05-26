@@ -12,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Setter
 @Schema(name = "AddLostItemRequestDto")
 public class AddLostItemRequestDto {
-    private Integer userId;
     private String title;
     private String description;
     private MultipartFile photo;

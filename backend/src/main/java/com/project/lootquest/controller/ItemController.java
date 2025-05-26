@@ -3,9 +3,11 @@ package com.project.lootquest.controller;
 import com.project.lootquest.dto.AddFoundItemRequestDto;
 import com.project.lootquest.dto.AddLostItemRequestDto;
 import com.project.lootquest.entity.LostItem;
+import com.project.lootquest.service.JwtService;
 import com.project.lootquest.service.LostItemService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
+import org.apache.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,10 +24,12 @@ public class ItemController {
     @PostMapping(value = "/add-lost-item", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<?> addLostItem(
-            @ModelAttribute AddLostItemRequestDto addLostItemRequestDto
+            @ModelAttribute AddLostItemRequestDto addLostItemRequestDto,
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader
     ) {
         try {
-            return ResponseEntity.ok(lostItemService.addLostItem(addLostItemRequestDto));
+            String token = authorizationHeader.substring(7); // remove "Bearer "
+            return ResponseEntity.ok(lostItemService.addLostItem(token, addLostItemRequestDto));
         } catch (Exception e) {
             return ResponseEntity.status(500).body(e.getMessage());
         }
@@ -34,10 +38,11 @@ public class ItemController {
     @GetMapping("/get-your-lost-items")
     @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<?> getYourLostItems(
-            @RequestParam Integer userId
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader
     ) {
         try {
-            return ResponseEntity.ok(lostItemService.getYourLostItems(userId));
+            String token = authorizationHeader.substring(7); // remove "Bearer "
+            return ResponseEntity.ok(lostItemService.getYourLostItems(token));
         } catch (Exception e) {
             return ResponseEntity.status(500).body(e.getMessage());
         }
@@ -84,12 +89,13 @@ public class ItemController {
     @GetMapping("/get-nearby-lost-items")
     @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<?> getNearbyLostItems(
-            @RequestParam Integer userId,
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
             @RequestParam Double latitude,
             @RequestParam Double longitude
     ) {
         try {
-            return ResponseEntity.ok(lostItemService.getNearbyLostItems(userId, latitude, longitude));
+            String token = authorizationHeader.substring(7); // remove "Bearer "
+            return ResponseEntity.ok(lostItemService.getNearbyLostItems(token, latitude, longitude));
         } catch (Exception e) {
             return ResponseEntity.status(500).body(e.getMessage());
         }
@@ -98,10 +104,12 @@ public class ItemController {
     @PostMapping(value = "/add-found-item", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<?> addFoundItem(
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
             @ModelAttribute AddFoundItemRequestDto addFoundItemRequestDto
             ) {
         try {
-            return ResponseEntity.ok(lostItemService.addFoundItem(addFoundItemRequestDto));
+            String token = authorizationHeader.substring(7); // remove "Bearer "
+            return ResponseEntity.ok(lostItemService.addFoundItem(token, addFoundItemRequestDto));
         } catch (Exception e) {
             return ResponseEntity.status(500).body(e.getMessage());
         }
