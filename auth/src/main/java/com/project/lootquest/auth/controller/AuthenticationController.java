@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
 public class AuthenticationController {
     private final JwtService jwtService;
@@ -39,11 +41,17 @@ public class AuthenticationController {
     public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginDto loginUserDto) {
         User authenticatedUser = authenticationService.login(loginUserDto);
 
-        String jwtToken = jwtService.generateToken(authenticatedUser);
+        Map<String, Object> extraClaims = Map.of(
+                "userId", authenticatedUser.getId()
+        );
+
+        String jwtToken = jwtService.generateToken(extraClaims, authenticatedUser);
 
         LoginResponse loginResponse = new LoginResponse();
         loginResponse.setToken(jwtToken);
         loginResponse.setExpiresIn(jwtService.getExpirationTime());
+
+
 
         return ResponseEntity.ok(loginResponse);
     }
