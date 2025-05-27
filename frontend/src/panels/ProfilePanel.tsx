@@ -28,6 +28,7 @@ export default function ProfilePanel({ onClose }: ProfilePanelProps) {
   }, []);
 
   const handleLogOut = () => {
+    localStorage.clear();
     navigate(`/login`);
   };
   
