@@ -26,25 +26,49 @@ import org.json.*;
 @Service
 @NoArgsConstructor(force = true)
 public class LostItemService {
-    @Autowired
-    private LostItemRepository lostItemRepository;
+
+    private final LostItemRepository lostItemRepository;
+    private final FoundItemRepository foundItemRepository;
+    private final UserRepository userRepository;
+    private final S3Service s3Service;
+    private final GptService gptService;
+    private final JwtService jwtService;
 
     @Autowired
-    private FoundItemRepository foundItemRepository;
+    public LostItemService(
+            LostItemRepository lostItemRepository,
+            FoundItemRepository foundItemRepository,
+            UserRepository userRepository,
+            S3Service s3Service,
+            GptService gptService,
+            JwtService jwtService
+    ) {
+        this.lostItemRepository = lostItemRepository;
+        this.foundItemRepository = foundItemRepository;
+        this.userRepository = userRepository;
+        this.s3Service = s3Service;
+        this.gptService = gptService;
+        this.jwtService = jwtService;
+    }
 
-    @Autowired
-    private UserRepository userRepository;
+    Integer getUserIdFromToken(String token) {
+        if (token == null || token.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token is missing or invalid.");
+        }
 
-    @Autowired
-    private S3Service s3Service;
+        if (jwtService == null) {
+            throw new IllegalStateException("JwtService is not initialized properly");
+        }
 
-    @Autowired
-    private GptService gptService;
+        return jwtService.extractClaim(token, claims -> claims.get("userId", Integer.class));
+    }
 
     @Transactional
-    public LostItem addLostItem(AddLostItemRequestDto request) {
+    public LostItem addLostItem(String token, AddLostItemRequestDto request) throws NullPointerException {
+        Integer userId = getUserIdFromToken(token);
+
         LostItem item = LostItem.builder()
-                .userId(request.getUserId())
+                .userId(userId)
                 .title(request.getTitle())
                 .description(request.getDescription())
                 .latitude(request.getLatitude())
@@ -56,18 +80,23 @@ public class LostItemService {
                 .build();
 
         try {
+            assert s3Service != null;
             String photoUrl = s3Service.uploadFile(request.getPhoto());
             item.setPhotoUrl(photoUrl);
         } catch (IOException e) {
             throw new RuntimeException("Photo upload failed", e);
         }
 
+        assert lostItemRepository != null;
         return lostItemRepository.save(item);
     }
 
-    public ArrayList<LostItem> getYourLostItems(Integer userId) {
+    public ArrayList<LostItem> getYourLostItems(String token) {
+        Integer userId = getUserIdFromToken(token);
+
         ArrayList<LostItem> lostItems = new ArrayList<>();
         try {
+            assert lostItemRepository != null;
             for (LostItem lostItem : lostItemRepository.findAll()) {
                 if (lostItem.getUserId().equals(userId)) {
                     lostItems.add(lostItem);
@@ -83,6 +112,7 @@ public class LostItemService {
     public ArrayList<FoundItem> getFindingsByLostItemId(Integer lostItemId) {
         ArrayList<FoundItem> foundItems = new ArrayList<>();
         try {
+            assert foundItemRepository != null;
             for (FoundItem foundItem : foundItemRepository.findAll()) {
                 if (foundItem.getLostItemId().equals(lostItemId)) {
                     foundItems.add(foundItem);
@@ -101,11 +131,13 @@ public class LostItemService {
 
     public void deleteLostItem(Integer id) {
         try {
+            assert lostItemRepository != null;
             Optional<LostItem> lostItem = lostItemRepository.findById(id);
             if (lostItem.isPresent()) {
                 String photoUrl = lostItem.get().getPhotoUrl();
                 if (photoUrl != null) {
                     String key = extractKeyFromUrl(photoUrl);
+                    assert s3Service != null;
                     s3Service.deleteFile(key);
                 }
                 lostItemRepository.delete(lostItem.get());
@@ -119,6 +151,7 @@ public class LostItemService {
 
     public void resolveLostItem(Integer id) {
         try {
+            assert lostItemRepository != null;
             Optional<LostItem> lostItem = lostItemRepository.findById(id);
             if (lostItem.isPresent()) {
                 LostItem item = lostItem.get();
@@ -133,11 +166,13 @@ public class LostItemService {
         }
     }
 
-    public ArrayList<LostItem> getNearbyLostItems(Integer userId, Double userLatitude, Double userLongitude) {
+    public ArrayList<LostItem> getNearbyLostItems(String token, Double userLatitude, Double userLongitude) {
+        Integer userId = getUserIdFromToken(token);
         double radius = 0.5; // Default radius in km
 
         ArrayList<LostItem> nearbyLostItems = new ArrayList<>();
         try {
+            assert lostItemRepository != null;
             for (LostItem lostItem : lostItemRepository.findAll()) {
                 if (!lostItem.getUserId().equals(userId)){
                     if (!lostItem.getIsFound()) {
@@ -166,11 +201,13 @@ public class LostItemService {
         return R * c; // Distance in km
     }
 
-    public FoundItem addFoundItem(AddFoundItemRequestDto addFoundItemRequestDto) {
-        if (!userRepository.existsById(addFoundItemRequestDto.getFoundByUserId())) {
+    public FoundItem addFoundItem(String token, AddFoundItemRequestDto addFoundItemRequestDto) {
+        Integer userId = getUserIdFromToken(token);
+        if (!userRepository.existsById(userId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User ID is invalid.");
         }
 
+        assert lostItemRepository != null;
         Optional<LostItem> lostItem = lostItemRepository.findById(addFoundItemRequestDto.getLostItemId());
         if (lostItem.isEmpty() || Boolean.TRUE.equals(lostItem.get().getIsFound())) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Lost item not found or already marked as found.");
@@ -182,6 +219,7 @@ public class LostItemService {
             String base64Found = Base64.getEncoder().encodeToString(foundItemPhoto); // use this
 
             String lostItemDescription = lostItem.get().getDescription(); // use this
+            assert s3Service != null;
             byte[] lostItemPhoto = s3Service.downloadFileAsBytes(lostItem.get().getPhotoUrl());
             String base64Lost = Base64.getEncoder().encodeToString(lostItemPhoto); // use this
 
@@ -195,7 +233,7 @@ public class LostItemService {
                 String photoUrl = s3Service.uploadFile(addFoundItemRequestDto.getPhoto());
 
                 FoundItem newFoundItem = FoundItem.builder()
-                        .foundByUserId(addFoundItemRequestDto.getFoundByUserId())
+                        .foundByUserId(userId)
                         .photoUrl(photoUrl)
                         .lostItemId(addFoundItemRequestDto.getLostItemId())
                         .description(addFoundItemRequestDto.getDescription())
@@ -206,6 +244,7 @@ public class LostItemService {
 
                 notifyUserOfFoundItem(lostItem.get().getUserId(), lostItem.get().getTitle(), lostItem.get().getPhotoUrl());
 
+                assert foundItemRepository != null;
                 return foundItemRepository.save(newFoundItem);
             } catch (IOException e) {
                 throw new RuntimeException("Photo upload failed", e);
@@ -226,6 +265,7 @@ public class LostItemService {
         ChatMessageDto lostItemMessage = new ChatMessageDto("This is the lost item description and optionally photo: " + lostItemDescription, lostItemPhoto);
         ChatMessageDto foundItemMessage = new ChatMessageDto("This is the found item photo and optionally description: " + foundItemDescription, foundItemPhoto);
 
+        assert gptService != null;
         String response = gptService.getChatCompletion(new ArrayList<ChatMessageDto>() {{
             add(systemMessage);
             add(lostItemMessage);

@@ -11,7 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AddFoundItemRequestDto {
-    private Integer foundByUserId;
     private Integer lostItemId;
     private String description;
     private MultipartFile photo;
