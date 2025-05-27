@@ -7,6 +7,7 @@ import MyFindingsPage from "./pages/MyFindingsPage";
 import MyLostItemsPage from "./pages/MyLostItemsPage";
 import ItemHistoryPage from './pages/ItemHistory';
 import SubmitReportPage from './pages/SubmitReportPage'
+import FoundReportPage from './pages/FoundReportPage';
 
 function App() {
   return (
@@ -42,9 +43,15 @@ function App() {
         </ProtectedRoute>}
       />
 
-      <Route path="/submitreport/:coordinates" element={
+      <Route path="/submit-report/:coordinates" element={
         <ProtectedRoute>
           <SubmitReportPage />
+        </ProtectedRoute>}
+      />
+
+      <Route path="/found-report/:itemId" element={
+        <ProtectedRoute>
+          <FoundReportPage />
         </ProtectedRoute>}
       />
       

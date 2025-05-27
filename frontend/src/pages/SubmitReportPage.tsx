@@ -7,8 +7,9 @@ import RangeSlider from "../props/RangeSlider";
 export default function SubmitReportPage() {
   const navigate = useNavigate();
   const { coordinates } = useParams();
+  const [latitude, longitude] = coordinates?.split(",") || [];
   const [rangeValue, setRangeValue] = useState<number>(250);
-  const [name, setName] = useState("");
+  const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [photo, setPhoto] = useState<string | null>(null);
 
@@ -18,9 +19,45 @@ export default function SubmitReportPage() {
     }
   };
 
-  const handleSubmit = () => {
-    alert("Report submitted!");
-    navigate(`/home`);
+  const handleSubmit = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Not authenticated!");
+      return;
+    }
+  
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("latitude", latitude || "");
+    formData.append("longitude", longitude || "");
+    formData.append("radius", rangeValue.toString());
+  
+    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+    if (fileInput?.files && fileInput.files[0]) {
+      formData.append("photo", fileInput.files[0]);
+    }
+    
+  
+    try {
+      const response = await fetch("http://localhost:8080/api/v1/items/add-lost-item", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+  
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText);
+      }
+  
+      alert("Report submitted!");
+      navigate("/home");
+    } catch (error: any) {
+      alert(`Error submitting report: ${error.message}`);
+    }
   };
 
   return (
@@ -30,17 +67,17 @@ export default function SubmitReportPage() {
       <div className="report-data">
         <section className="location-section">
           <h2>Location</h2>
-          <p className="coordinates-text">{coordinates}</p>
+          <p className="coordinates-text">{`${latitude}, ${longitude}`}</p>
           <RangeSlider value={rangeValue} onChange={setRangeValue} />
           <div className="location-pic-placeholder"></div>
         </section>
 
         <section className="name-section">
-          <h2>Item Name</h2>
+          <h2>Item Title</h2>
           <input
             type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
             placeholder="Enter location name"
           />
         </section>

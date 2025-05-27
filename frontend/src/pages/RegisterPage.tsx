@@ -33,7 +33,6 @@ export default function RegisterPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name: username,
           email: email, 
           phoneNumber: phoneNumber,
           password: password 
@@ -71,7 +70,7 @@ export default function RegisterPage() {
             <input
               type="text"
               placeholder="Name"
-              value={phoneNumber}
+              value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
               disabled={isLoading}

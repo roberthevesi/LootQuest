@@ -44,16 +44,24 @@ export default function LoginPage() {
       
       if (data.token) {
         localStorage.setItem("token", data.token);
-        localStorage.setItem("username", data.username);
-        localStorage.setItem("phoneNumber", data.phoneNumber);
-        localStorage.setItem("email", data.email);
+
+        if(data.user.username) {
+          localStorage.setItem("username", data.user.username);
+        }
+
+        if(data.user.phoneNumber) {
+          localStorage.setItem("phoneNumber", data.user.phoneNumber);
+        }
+
+        if(data.user.email) {
+          localStorage.setItem("email", data.user.email);
+        }
         
         if (data.expiresIn) {
           const expirationTime = Date.now() + data.expiresIn;
           localStorage.setItem("tokenExpiration", expirationTime.toString());
         }
         
-        alert("Login successful!");
         navigate("/home");
       } else {
         alert("Login failed - no token received.");
