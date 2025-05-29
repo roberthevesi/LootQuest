@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search } from 'lucide-react';
 import ListItem from '../components/ListItem';
@@ -9,51 +9,63 @@ import "../styles/myfindings.css"
 
 export default function MyFindingsPage() {
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [findings, setFindings] = useState<FindingItem[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  
-  // Hardcoded data - replace with database calls later
-  const findings: FindingItem[] = [
-    {
-      id: 1,
-      name: "iPhone 13 Pro",
-      location: "Central Library, 2nd Floor",
-      owner: "John Smith"
-    },
-    {
-      id: 2,
-      name: "Blue Backpack",
-      location: "Student Union Building",
-      owner: "Sarah Johnson"
-    },
-    {
-      id: 3,
-      name: "Car Keys (Toyota)",
-      location: "Parking Lot B",
-      owner: "Mike Davis"
-    },
-    {
-      id: 4,
-      name: "Gold Watch",
-      location: "Gymnasium",
-      owner: "Emily Chen"
-    },
-    {
-      id: 5,
-      name: "Notebook - Biology",
-      location: "Science Building Room 204",
-      owner: "Alex Rodriguez"
-    }
-  ];
-
-  const filteredFindings: FindingItem[] = findings.filter(item =>
-    item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.owner.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   const handleBack = () => {
-    navigate('/home', { state: { fromListingPage: true } }); // Go back to previous page
+    navigate('/home', { state: { fromListingPage: true } });
   };
+  
+
+  useEffect(() => {
+    const fetchLostItems = async () => {
+      const token = localStorage.getItem("token");
+  
+      if (!token) {
+        setError("User not authenticated.");
+        setLoading(false);
+        return;
+      }
+  
+      try {
+        const response = await fetch("http://localhost:8080/api/v1/items/get-your-findings", {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+          },
+        });
+  
+        if (!response.ok) {
+          throw new Error("Failed to fetch findings");
+        }
+  
+        const data = await response.json();
+  
+        const transformed: FindingItem[] = data.map((item: any) => ({
+          ...item,
+          title: new Date(item.createdAtDateTime).toLocaleString(),
+        }));
+  
+        setFindings(transformed);
+      } catch (err: any) {
+        setError(err.message || "Something went wrong");
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchLostItems();
+  }, []);
+
+  const filteredFindings: FindingItem[] = findings.filter(item =>
+    item.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    item.id.toString().includes(searchTerm) ||
+    item.latitude.toString().includes(searchTerm) ||
+    item.longitude.toString().includes(searchTerm) ||
+    item.owner.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="myfindings-page">

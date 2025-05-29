@@ -1,8 +1,13 @@
 export interface FindingItem {
   id: number;
-  title: string;
+  foundByUserId: number;
+  lostItemId: number;
+  description: string;
+  photoUrl: string;
   latitude: number;
   longitude: number;
+  createdAtDateTime: string;
+  title: string;
   owner: string;
 }
   
