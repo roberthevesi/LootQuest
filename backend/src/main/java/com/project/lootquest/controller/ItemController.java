@@ -48,6 +48,20 @@ public class ItemController {
         }
     }
 
+    @GetMapping("/get-your-findings")
+    @SecurityRequirement(name = "Bearer Authentication")
+    public ResponseEntity<?> getYourFindings(
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader
+    ) {
+        try {
+            String token = authorizationHeader.substring(7); // remove "Bearer "
+            return ResponseEntity.ok(lostItemService.getYourFindings(token));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(e.getMessage());
+        }
+    }
+
+
     @GetMapping("/get-findings-by-lost-item-id")
     @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<?> getFindingsByLostItemId(

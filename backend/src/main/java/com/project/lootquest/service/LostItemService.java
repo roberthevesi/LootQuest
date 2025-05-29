@@ -112,6 +112,24 @@ public class LostItemService {
         return lostItems;
     }
 
+    public ArrayList<FoundItem> getYourFindings(String token) {
+        Integer userId = getUserIdFromToken(token);
+
+        ArrayList<FoundItem> foundItems = new ArrayList<>();
+        try {
+            assert foundItemRepository != null;
+            for (FoundItem foundItem : foundItemRepository.findAll()) {
+                if (foundItem.getFoundByUserId().equals(userId)) {
+                    foundItems.add(foundItem);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Error while fetching your findings: " + e.getMessage());
+        }
+
+        return foundItems;
+    }
+
     public ArrayList<FoundItem> getFindingsByLostItemId(Integer lostItemId) {
         ArrayList<FoundItem> foundItems = new ArrayList<>();
         try {
@@ -142,6 +160,12 @@ public class LostItemService {
                     String key = extractKeyFromUrl(photoUrl);
                     assert s3Service != null;
                     s3Service.deleteFile(key);
+                }
+                assert foundItemRepository != null;
+                for (FoundItem foundItem : foundItemRepository.findAll()) {
+                    if (foundItem.getLostItemId().equals(id)) {
+                        foundItemRepository.delete(foundItem);
+                    }
                 }
                 lostItemRepository.delete(lostItem.get());
             } else {
