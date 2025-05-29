@@ -1,22 +1,11 @@
 import { MapPin } from 'lucide-react';
 import '../styles/mapreportpin.css';
-
-interface LostItem {
-  id: number;
-  name: string;
-  reporter: string;
-  phone: string;
-  description: string;
-  photo?: string | null;
-  latitude: number;
-  longitude: number;
-  location: string;
-}
+import { NearbyLostItem } from '../types';
 
 interface MapPinMarkerProps {
-  item: LostItem;
+  item: NearbyLostItem;
   position: { x: number; y: number };
-  onClick: (item: LostItem) => void;
+  onClick: (item: NearbyLostItem) => void;
 }
 
 export default function MapPinMarker({ item, position, onClick }: MapPinMarkerProps) {
@@ -28,7 +17,7 @@ export default function MapPinMarker({ item, position, onClick }: MapPinMarkerPr
         top: `${position.y}px`
       }}
       onClick={() => onClick(item)}
-      aria-label={`Lost item: ${item.name} at ${item.location}`}
+      aria-label={`Lost item: ${item.title} at ${item.latitude}, ${item.longitude}`}
     >
       <div className="pin-container">
         <MapPin 

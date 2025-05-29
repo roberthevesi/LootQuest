@@ -14,8 +14,9 @@
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   width: 320px;
   max-width: 384px;
-  max-height: 384px;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .popup-header {
@@ -53,8 +54,8 @@
 }
 
 .popup-content {
+  flex: 1;
   overflow-y: auto;
-  max-height: 256px;
   padding: 16px;
 }
 
@@ -146,6 +147,8 @@
 
 .description-content {
   flex: 1;
+  min-width: 0;
+  overflow-wrap: break-word;
 }
 
 .description-text {

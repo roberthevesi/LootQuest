@@ -1,83 +1,74 @@
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import "../styles/itemhistory.css"
 
-// Type definitions
 interface EngagementItem {
   id: number;
-  username: string;
-  location: string;
-  photo: string;
+  foundByUserId: number;
+  photoUrl: string;
+  latitude: number;
+  longitude: number;
+  createdAtDateTime: string;
 }
 
-// Mock data for engagement history - replace with actual API call
-const mockEngagementData: Record<string, EngagementItem[]> = {
-  "backpack": [
-    {
-      id: 1,
-      username: "john_doe",
-      location: "Piata Romana",
-      photo: "https://via.placeholder.com/50x50?text=JD"
-    },
-    {
-      id: 2,
-      username: "maria_pop",
-      location: "Universitate",
-      photo: "https://via.placeholder.com/50x50?text=MP"
-    },
-    {
-      id: 3,
-      username: "alex_ionescu",
-      location: "Piata Unirii",
-      photo: "https://via.placeholder.com/50x50?text=AI"
-    }
-  ]
-};
-
 export default function ItemHistoryPage() {
-    const { username, itemname } = useParams<{ username: string; itemname: string }>();
+    const { itemId } = useParams<{ itemId: string}>();
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
+    const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
+    const openFullscreen = (photoUrl: string) => setFullscreenImage(photoUrl);
+    const closeFullscreen = () => setFullscreenImage(null);
     const navigate = useNavigate();
+    const location = useLocation();
+    const itemTitle = (location.state as { itemName?: string })?.itemName;
     const [engagementHistory, setEngagementHistory] = useState<EngagementItem[]>([]);
-    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Simulate API call to fetch engagement history
-        const fetchEngagementHistory = async () => {
-            setLoading(true);
-            try {
-                // Replace this with actual API call
-                // const response = await fetch(`/api/items/${itemname}/engagement-history`);
-                // const data = await response.json();
-                
-                // Using mock data for now
-                const data = mockEngagementData[itemname?.toLowerCase() || ''] || [];
-                setEngagementHistory(data);
-            } catch (error) {
-                console.error('Error fetching engagement history:', error);
-                setEngagementHistory([]);
-            } finally {
-                setLoading(false);
-            }
-        };
+      const fetchEngagementHistory = async () => {
+        const token = localStorage.getItem("token");
 
-        fetchEngagementHistory();
-    }, [itemname]);
+        if (!token) {
+          setError("User not authenticated.");
+          setLoading(false);
+          return;
+        }
+
+        try {
+          const response = await fetch(`http://localhost:8080/api/v1/items/get-findings-by-lost-item-id?lostItemId=${itemId}`, {
+            method: "GET",
+            headers: {
+              "Authorization": `Bearer ${token}`,
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to fetch engagement history");
+          }
+
+          const data = await response.json();
+          setEngagementHistory(data);
+
+        } catch (error) {
+            console.error('Error fetching engagement history:', error);
+            setEngagementHistory([]);
+          } finally {
+            setLoading(false);
+          }
+      };
+    
+      fetchEngagementHistory();
+    }, [itemId]);
 
     const handleBack = () => {
-        navigate(-1); // Go back to previous page
-    };
-
-    // Format item name for display (capitalize first letter)
-    const formatItemName = (name: string | undefined): string => {
-        return name ? name.charAt(0).toUpperCase() + name.slice(1) : '';
+        navigate("/my-lost-items");
     };
 
     return (
         <div className="itemhistory-page">
             <div className="iteminfo-container">
                 <h2>Item History</h2>
-                <p><strong>Name:</strong> {formatItemName(itemname)}</p>
-                <p><strong>Owner:</strong> {username}</p>
+                <p><strong>Item ID:</strong> {itemId}</p>
+                <p><strong>Name:</strong> {itemTitle ?? "Unknown"}</p>
             </div>
 
             <div className="engagement-history-header">
@@ -88,24 +79,31 @@ export default function ItemHistoryPage() {
                 {loading ? (
                     <div className="loading-message">Loading engagement history...</div>
                 ) : engagementHistory.length > 0 ? (
-                    engagementHistory.map((engagement) => (
-                        <div key={engagement.id} className="engagement-item">
-                            <div className="engagement-photo">
-                                <img 
-                                    src={engagement.photo} 
-                                    alt={engagement.username}
-                                    onError={(e) => {
-                                        const target = e.target as HTMLImageElement;
-                                        target.src = `https://via.placeholder.com/50x50?text=${engagement.username.charAt(0).toUpperCase()}`;
-                                    }}
-                                />
-                            </div>
-                            <div className="engagement-info">
-                                <h4 className="engagement-username">{engagement.username}</h4>
-                                <p className="engagement-location">Found at: {engagement.location}</p>
-                            </div>
-                        </div>
-                    ))
+                  engagementHistory.map((engagement) => (
+                    <div key={engagement.id} className="engagement-item">
+                      <div className="engagement-photo">
+                        <img
+                          src={engagement.photoUrl}
+                          alt={`Photo by user ${engagement.foundByUserId}`}
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.src = `https://via.placeholder.com/50x50?text=U${engagement.foundByUserId}`;
+                          }}
+                          style={{ cursor: 'pointer' }}
+                          onClick={() => openFullscreen(engagement.photoUrl)}
+                        />
+                      </div>
+                      <div className="engagement-info">
+                        <h4 className="engagement-username">User ID: {engagement.foundByUserId}</h4>
+                        <p className="engagement-location">
+                          Location: {engagement.latitude.toFixed(4)}, {engagement.longitude.toFixed(4)}
+                        </p>
+                        <p className="engagement-date" style={{ color: '#5a0303', fontWeight: 'bold', fontSize: '14px' }}>
+                          Found at: {new Date(engagement.createdAtDateTime).toLocaleString()}
+                        </p>
+                      </div>
+                    </div>
+                  ))
                 ) : (
                     <div className="no-engagement-message">
                         No one has marked this item as found yet.
@@ -114,6 +112,46 @@ export default function ItemHistoryPage() {
             </div>
 
             <button className="back-btn" onClick={handleBack}>Back</button>
+
+            {fullscreenImage && (
+              <div 
+                className="fullscreen-overlay" 
+                onClick={closeFullscreen} 
+                style={{
+                  position: 'fixed',
+                  top: 0, left: 0, right: 0, bottom: 0,
+                  backgroundColor: 'rgba(0,0,0,0.8)',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  zIndex: 9999,
+                  cursor: 'pointer'
+                }}
+              >
+                <img 
+                  src={fullscreenImage} 
+                  alt="Fullscreen view" 
+                  style={{ maxWidth: '90%', maxHeight: '90%', cursor: 'auto' }}
+                  onClick={e => e.stopPropagation()}
+                />
+                <button 
+                  onClick={closeFullscreen}
+                  style={{
+                    position: 'absolute',
+                    top: 20,
+                    right: 5,
+                    fontSize: 30,
+                    background: 'none',
+                    border: 'none',
+                    color: 'white',
+                    cursor: 'pointer',
+                  }}
+                  aria-label="Close fullscreen"
+                >
+                  &times;
+                </button>
+              </div>
+            )}
         </div>
     );
 }

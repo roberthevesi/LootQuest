@@ -1,31 +1,18 @@
+import { useNavigate } from "react-router-dom";
 import { X, Phone, User, FileText, MapPin } from 'lucide-react';
 import '../styles/mapreportpanel.css';
+import { NearbyLostItem } from '../types';
 
-interface LostItem {
-  id: number;
-  name: string;
-  reporter: string;
-  phone: string;
-  description: string;
-  photo?: string | null;
-  latitude: number;
-  longitude: number;
-  location: string;
-}
-
-interface ItemDetailsPopupProps {
-  item: LostItem;
+interface MapReportPanelProps {
+  item: NearbyLostItem;
   onClose: () => void;
-  onReportFound: (item: LostItem) => void;
 }
 
-export default function MapReportPanel({ 
-  item, 
-  onClose, 
-  onReportFound 
-}: ItemDetailsPopupProps) {
+export default function MapReportPanel({ item, onClose }: MapReportPanelProps) {
+  const navigate = useNavigate();
+
   const handleReportFound = () => {
-    onReportFound(item);
+    navigate(`/found-report/${item.id}`, { state: { item } });
   };
 
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
@@ -48,47 +35,26 @@ export default function MapReportPanel({
 
         <div className="popup-content">
           <div className="item-name-section">
-            <h4 className="item-name">{item.name}</h4>
+            <h4 className="item-name">{item.title}</h4>
           </div>
 
-          {item.photo && (
+          {item.photoUrl && (
             <div className="photo-section">
               <img
-                src={item.photo}
-                alt={item.name}
+                src={item.photoUrl}
+                alt={item.title}
                 className="item-photo"
                 onError={handleImageError}
               />
             </div>
           )}
 
-          <div className="info-section">
-            <div className="info-row">
-              <User className="info-icon user-icon" />
-              <span className="info-label">Reporter:</span>
-              <span className="info-value">{item.reporter}</span>
-            </div>
-            
-            <div className="info-row">
-              <Phone className="info-icon phone-icon" />
-              <span className="info-label">Phone:</span>
-              <a 
-                href={`tel:${item.phone}`}
-                className="phone-link"
-              >
-                {item.phone}
-              </a>
-            </div>
-          </div>
-
           <div className="description-section">
             <div className="description-row">
               <FileText className="info-icon description-icon" />
               <div className="description-content">
                 <span className="info-label">Description:</span>
-                <p className="description-text">
-                  {item.description}
-                </p>
+                <p className="description-text">{item.description}</p>
               </div>
             </div>
           </div>
@@ -97,7 +63,7 @@ export default function MapReportPanel({
             <div className="info-row">
               <MapPin className="info-icon location-icon" />
               <span className="info-label">Location:</span>
-              <span className="info-value">{item.location}</span>
+              <span className="info-value">{`${item.latitude}, ${item.longitude}`}</span>
             </div>
           </div>
         </div>

@@ -5,15 +5,22 @@ import ProfilePanel from "../panels/ProfilePanel";
 import ReportSpotPanel from "../panels/ReportSpotPanel";
 import { MapView } from "../components/MapView";
 import { Coordinate, getLocationAsync } from "../services/locationService";
+import { NearbyLostItem } from "../types";
+import MapPinMarker from "../props/MapReportPin";
+import MapReportPanel from "../panels/MapReportPanel";
 
 export default function HomePage() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [nearbyLostItems, setNearbyLostItems] = useState<NearbyLostItem[]>([]);
+  const [selectedNearbyItem, setSelectedNearbyItem] =
+    useState<NearbyLostItem | null>(null);
   const [showProfile, setShowProfile] = useState(false);
-  // const [disableProfileAnimation, setDisableProfileAnimation] = useState(false);
   const [showDropIcon, setShowDropIcon] = useState(false);
   const [showReportSpot, setShowReportSpot] = useState(false);
-  const [coordinates, setCoordinates] = useState<Coordinate>();
+  const [coordinates, setCoordinates] = useState<Coordinate>([
+    24.9668, 45.9432,
+  ]);
 
   useEffect(() => {
     getLocationAsync().then((response) => setCoordinates(response));
@@ -23,6 +30,49 @@ export default function HomePage() {
     setShowDropIcon(true);
     setShowReportSpot(true);
   };
+
+  useEffect(() => {
+    const fetchNearbyLostItems = async () => {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        console.error("User not authenticated.");
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          `http://localhost:8080/api/v1/items/get-nearby-lost-items?latitude=${coordinates[1]}&longitude=${coordinates[0]}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch lost items");
+        }
+
+        const data = await response.json();
+        setNearbyLostItems(data);
+      } catch (error) {
+        console.error("Error fetching nearby lost items:", error);
+      }
+    };
+
+    fetchNearbyLostItems();
+  }, []);
+
+  useEffect(() => {
+    console.log("Nearby lost items:", nearbyLostItems);
+    if (nearbyLostItems.length > 0) {
+      console.log("✅ List is not empty");
+    } else {
+      console.log("❌ List is empty");
+    }
+  }, [nearbyLostItems]);
 
   useEffect(() => {
     if (location.state?.fromListingPage) {
@@ -74,22 +124,36 @@ export default function HomePage() {
       )}
       {showReportSpot && (
         <ReportSpotPanel
-          coordinates={
-            !coordinates ? "" : `${coordinates[1]}, ${coordinates[0]}`
-          }
+          latitude={coordinates[1]}
+          longitude={coordinates[0]}
           onClose={() => {
             setShowReportSpot(false);
             setShowDropIcon(false);
           }}
           onConfirm={() => {
             navigate(
-              `/submitreport/${encodeURIComponent(
-                !coordinates ? "" : `${coordinates[1]}, ${coordinates[0]}`
+              `/submit-report/${encodeURIComponent(
+                `${coordinates[1]}, ${coordinates[0]}`
               )}`
             );
             setShowReportSpot(false);
             setShowDropIcon(false);
           }}
+        />
+      )}
+
+      {nearbyLostItems.length > 0 && (
+        <MapPinMarker
+          item={nearbyLostItems[0]}
+          position={{ x: window.innerWidth / 2, y: window.innerHeight / 2 }}
+          onClick={(item) => setSelectedNearbyItem(item)}
+        />
+      )}
+
+      {selectedNearbyItem && (
+        <MapReportPanel
+          item={selectedNearbyItem}
+          onClose={() => setSelectedNearbyItem(null)}
         />
       )}
     </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search } from 'lucide-react';
 import ListItem from '../components/ListItem';
@@ -9,46 +9,75 @@ import "../styles/mylostitems.css"
 
 export default function MyLostItemsPage() {
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [lostItems, setLostItems] = useState<LostItem[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  
-  // Hardcoded data - replace with database calls later
-  const [lostItems, setLostItems] = useState<LostItem[]>([
-    {
-      id: 1,
-      name: "Wallet - Brown Leather",
-      location: "Campus Cafeteria"
-    },
-    {
-      id: 2,
-      name: "AirPods Pro",
-      location: "Library Study Room 3"
-    },
-    {
-      id: 3,
-      name: "Red Umbrella",
-      location: "Bus Stop near Main Gate"
-    },
-    {
-      id: 4,
-      name: "Textbook - Mathematics",
-      location: "Lecture Hall A"
-    },
-    {
-      id: 5,
-      name: "Silver Ring",
-      location: "Swimming Pool Area"
-    }
-  ]);
 
-  const handleEngagementHistory = (itemId: number): void => {
-    console.log(`View engagement history for item ${itemId}`);
-    // TODO: Navigate to engagement history page or open modal
+  useEffect(() => {
+    const fetchLostItems = async () => {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        setError("User not authenticated.");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const response = await fetch("http://localhost:8080/api/v1/items/get-your-lost-items", {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch lost items");
+        }
+
+        const data = await response.json();
+        setLostItems(data);
+      } catch (err: any) {
+        setError(err.message || "Something went wrong");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLostItems();
+  }, []);
+  
+
+  const handleEngagementHistory = (itemId: number, itemTitle: string): void => {
+    navigate(`/item-history/${itemId}`, { state: { itemName: itemTitle } });
   };
 
-  const handleDelete = (itemId: number): void => {
-    console.log(`Delete item ${itemId}`);
-    setLostItems(prevItems => prevItems.filter(item => item.id !== itemId));
-    // TODO: Make API call to delete from database
+  const handleDelete = async (itemId: number): Promise<void> => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.error("User not authenticated.");
+      return;
+    }
+  
+    try {
+      const response = await fetch(`http://localhost:8080/api/v1/items/delete-lost-item?id=${itemId}`, {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to delete item");
+      }
+  
+      setLostItems(prevItems => prevItems.filter(item => item.id !== itemId));
+      console.log(`Deleted item ${itemId}`);
+    } catch (error) {
+      console.error("Error deleting item:", error);
+    }
   };
 
   const handleBack = () => {
@@ -56,8 +85,9 @@ export default function MyLostItemsPage() {
   };
 
   const filteredLostItems: LostItem[] = lostItems.filter(item =>
-    item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.location.toLowerCase().includes(searchTerm.toLowerCase())
+    item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    item.latitude.toString().includes(searchTerm) ||
+    item.longitude.toString().includes(searchTerm)
   );
 
   return (
@@ -79,23 +109,29 @@ export default function MyLostItemsPage() {
           <Search className="searchbar"/>
         </div>
 
-        <div className="list-container">
-          {filteredLostItems.length > 0 ? (
-                filteredLostItems.map(item => (
-                  <ListItem
-                    key={item.id}
-                    item={item}
-                    type="lost"
-                    onEngagementHistory={handleEngagementHistory}
-                    onDelete={handleDelete}
-                  />
-                ))
-              ) : (
-                <div className="text-center text-gray-500 py-8">
-                  No lost items match your search.
-                </div>
-              )}
-        </div>
+        {loading ? (
+          <div className="text-center py-8">Loading lost items...</div>
+        ) : error ? (
+          <div className="text-center text-red-500 py-8">{error}</div>
+        ) : (
+          <div className="list-container">
+            {filteredLostItems.length > 0 ? (
+              filteredLostItems.map(item => (
+                <ListItem
+                  key={item.id}
+                  item={item}
+                  type="lost"
+                  onEngagementHistory={handleEngagementHistory}
+                  onDelete={handleDelete}
+                />
+              ))
+            ) : (
+              <div className="text-center text-gray-500 py-8">
+                No lost items match your search.
+              </div>
+            )}
+          </div>
+        )}
         <button className="lostitems-back-btn" onClick={handleBack}>Back</button>
       </div>
       

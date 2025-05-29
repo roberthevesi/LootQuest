@@ -11,7 +11,7 @@ import { Coordinate } from "../services/locationService.ts";
 import { createCircle } from "../helpers/utmHelper";
 
 export type MapViewProps = {
-  center?: Coordinate;
+  center: Coordinate;
 };
 
 const radiusMeters = 10;
@@ -35,7 +35,7 @@ export const MapView: React.FC<MapViewProps> = ({ center }) => {
         }),
       ],
       view: new View({
-        center: [24.9668, 45.9432],
+        center: center,
         zoom: 14,
       }),
     });
@@ -49,7 +49,7 @@ export const MapView: React.FC<MapViewProps> = ({ center }) => {
   }, []);
 
   useEffect(() => {
-    if (center && mapRef.current) {
+    if (mapRef.current) {
       const locationFeature = new Feature(new Point(center));
       locationFeature.setStyle(
         new Style({
