@@ -19,7 +19,6 @@
   display: flex;
   width: 100%;
   height: 100%;
-  background-color: #b33cda;
 }
 
 .search-bar {
@@ -69,46 +68,46 @@
 
 @media (max-width: 768px) {
   .search-bar {
-      width: 80%;
-      height: 5%;
-      top: 3.5%;
+    width: 80%;
+    height: 5%;
+    top: 3.5%;
   }
 
   .profile-btn,
   .add-btn {
-      height: 11%;
-      aspect-ratio: 1 / 1;
-      bottom: 4%;
+    height: 11%;
+    aspect-ratio: 1 / 1;
+    bottom: 4%;
   }
 
   .profile-btn {
-      left: 8%;
+    left: 8%;
   }
 
   .add-btn {
-      right: 8%;
+    right: 8%;
   }
 
   .profile-btn:focus,
   .add-btn:focus {
-      outline: none;
+    outline: none;
   }
 
   .drop-icon {
-      position: fixed;
-      top: -100px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 80px;
-      height: 80px;
-      animation: dropToCenter 0.5s ease-out forwards;
-      z-index: 0;
+    position: fixed;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 80px;
+    animation: dropToCenter 0.5s ease-out forwards;
+    z-index: 0;
   }
 
   @keyframes dropToCenter {
-      to {
-          top: 50%;
-          transform: translate(-50%, -50%);
-      }
+    to {
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
   }
 }

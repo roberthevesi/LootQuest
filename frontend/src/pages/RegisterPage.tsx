@@ -3,7 +3,8 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "../styles/auth.css";
 import useWindowWidth from "../hooks/useWindowWidth";
-import logo from "../assets/logo.png"
+import logo from "../assets/logo.png";
+import mapImage from "../assets/map.png";
 
 export default function RegisterPage() {
   const screenWidth = useWindowWidth();
@@ -33,15 +34,17 @@ export default function RegisterPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: email, 
+          email: email,
           phoneNumber: phoneNumber,
-          password: password 
+          password: password,
         }),
       });
 
       if (!response.ok) {
         if (response.status === 400) {
-          alert("Registration failed. Email might already be in use or invalid data provided.");
+          alert(
+            "Registration failed. Email might already be in use or invalid data provided."
+          );
         } else {
           alert("Registration failed. Please try again.");
         }
@@ -49,10 +52,9 @@ export default function RegisterPage() {
       }
 
       const userData = await response.json();
-      
+
       alert("Registration successful! Please login with your credentials.");
       navigate("/login");
-      
     } catch (error) {
       console.error("Error during registration:", error);
       alert("Network error. Please check your connection and try again.");
@@ -108,7 +110,12 @@ export default function RegisterPage() {
             Already have an account? <Link to="/login">Login</Link>
           </p>
         </div>
-        {!isMobile && <div className="welcome-image-component"></div>}
+        {!isMobile && (
+          <div
+            className="welcome-image-component"
+            style={{ backgroundImage: `url(${mapImage})` }}
+          ></div>
+        )}
       </div>
     </div>
   );

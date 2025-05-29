@@ -3,7 +3,8 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "../styles/auth.css";
 import useWindowWidth from "../hooks/useWindowWidth";
-import logo from "../assets/logo.png"
+import logo from "../assets/logo.png";
+import mapImage from "../assets/map.png";
 
 export default function LoginPage() {
   const screenWidth = useWindowWidth();
@@ -23,9 +24,9 @@ export default function LoginPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ 
-          email: email, 
-          password: password 
+        body: JSON.stringify({
+          email: email,
+          password: password,
         }),
       });
 
@@ -41,27 +42,27 @@ export default function LoginPage() {
       }
 
       const data = await response.json();
-      
+
       if (data.token) {
         localStorage.setItem("token", data.token);
 
-        if(data.user.username) {
+        if (data.user.username) {
           localStorage.setItem("username", data.user.username);
         }
 
-        if(data.user.phoneNumber) {
+        if (data.user.phoneNumber) {
           localStorage.setItem("phoneNumber", data.user.phoneNumber);
         }
 
-        if(data.user.email) {
+        if (data.user.email) {
           localStorage.setItem("email", data.user.email);
         }
-        
+
         if (data.expiresIn) {
           const expirationTime = Date.now() + data.expiresIn;
           localStorage.setItem("tokenExpiration", expirationTime.toString());
         }
-        
+
         navigate("/home");
       } else {
         alert("Login failed - no token received.");
@@ -81,28 +82,33 @@ export default function LoginPage() {
           <img src={logo} alt="Logo" className="logo" />
           <form className="auth-form" onSubmit={handleLogin}>
             <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-              <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-              <button type="submit" disabled={isLoading}>
-                {isLoading ? "Logging in..." : "Login"}
-              </button>
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <button type="submit" disabled={isLoading}>
+              {isLoading ? "Logging in..." : "Login"}
+            </button>
           </form>
           <p>
             Don't have an account? <Link to="/register">Register</Link>
           </p>
         </div>
-        {!isMobile && <div className="welcome-image-component"></div>}
+        {!isMobile && (
+          <div
+            className="welcome-image-component"
+            style={{ backgroundImage: `url(${mapImage})` }}
+          ></div>
+        )}
       </div>
     </div>
   );

@@ -64,7 +64,9 @@
 .welcome-image-component {
   width: 65%;
   height: 100%;
-  background-color: #3cda49;
+  background-position: center center;
+  background-repeat: repeat;
+  background-size: cover;
 }
 
 .welcome-image {
@@ -76,73 +78,73 @@
 
 @media (max-width: 768px) {
   .page-container {
-      margin: 0;
-      padding: 0;
-      width: 100vw;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: #e9e1d5;
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #e9e1d5;
   }
 
   .content-container {
-      display: flex;
-      width: 100%;
-      height: 100%;
-      background-color: #3cda49;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    background-color: #3cda49;
   }
 
   .auth-component {
-      width: 100%;
-      height: 100%;
-      background-color: #ffa770;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      position: relative;
+    width: 100%;
+    height: 100%;
+    background-color: #ffa770;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
   }
 
   .logo {
-      width: auto;
-      height: 16%;
-      position: absolute;
-      top: 14%;
+    width: auto;
+    height: 16%;
+    position: absolute;
+    top: 14%;
   }
 
   .auth-form {
-      margin-top: 30%;
-      display: flex;
-      flex-direction: column;
-      width: 55%;
-      gap: 1rem;
+    margin-top: 30%;
+    display: flex;
+    flex-direction: column;
+    width: 55%;
+    gap: 1rem;
   }
 
   .auth-form input {
-      appearance: none;
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      font-size: 16px;
-      padding: 12px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      box-sizing: border-box;
-      padding: 0.8rem;
-      font-size: 1rem;
-      color: #1a3a49;
-      background-color: #dee6f1;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    font-size: 16px;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box;
+    padding: 0.8rem;
+    font-size: 1rem;
+    color: #1a3a49;
+    background-color: #dee6f1;
   }
 
   .auth-form button {
-      margin-top: 10%;
-      padding: 0.8rem;
-      align-self: center;
-      font-size: 1.2rem;
-      background-color: #1a3a49;
-      color: #dee6f1;
-      border: none;
-      border-radius: 6px;
-      width: 65%;
+    margin-top: 10%;
+    padding: 0.8rem;
+    align-self: center;
+    font-size: 1.2rem;
+    background-color: #1a3a49;
+    color: #dee6f1;
+    border: none;
+    border-radius: 6px;
+    width: 65%;
   }
 }
