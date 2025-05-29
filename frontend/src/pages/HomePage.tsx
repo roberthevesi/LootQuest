@@ -19,7 +19,7 @@ export default function HomePage() {
   const [showDropIcon, setShowDropIcon] = useState(false);
   const [showReportSpot, setShowReportSpot] = useState(false);
   const [coordinates, setCoordinates] = useState<Coordinate>([
-    24.9668, 45.9432,
+    26.1025, 44.4268,
   ]);
 
   useEffect(() => {
