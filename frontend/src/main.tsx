@@ -5,9 +5,10 @@ import App from "./App.tsx";
 import { BrowserRouter } from "react-router-dom";
 
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("/firebase-messaging-sw.js", {
-    type: "module",
-  });
+  const swUrl = new URL("./firebase-messaging-sw.js", import.meta.url);
+  navigator.serviceWorker
+    .register(swUrl, { type: "module" })
+    .catch(console.error);
 }
 
 createRoot(document.getElementById("root")!).render(

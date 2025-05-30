@@ -69,7 +69,7 @@ public class AuthenticationService {
                 .orElseThrow();
 
         user.setFcmToken(input.getFcmToken());
-
+        userRepository.save(user);
         return user;
     }
 }
