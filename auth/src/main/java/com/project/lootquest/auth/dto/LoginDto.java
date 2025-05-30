@@ -3,6 +3,7 @@ package com.project.lootquest.auth.dto;
 public class LoginDto {
     private String email;
     private String password;
+    private String fcmToken;
 
     public String getEmail() {
         return email;
@@ -18,5 +19,13 @@ public class LoginDto {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getFcmToken() {
+        return fcmToken;
+    }
+
+    public void setFcmToken(String password) {
+        this.fcmToken = fcmToken;
     }
 }

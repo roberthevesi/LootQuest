@@ -27,6 +27,9 @@ public class User implements UserDetails {
     private String password;
     private LocalDateTime createdAtDateTime;
 
+    @Column(nullable = true)
+    private String fcmToken;
+
     public User(String email, String phoneNumber, String password) {
         this.email = email;
         this.phoneNumber = phoneNumber;
@@ -87,6 +90,10 @@ public class User implements UserDetails {
         this.password = password;
     }
 
+    public void setFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -94,6 +101,7 @@ public class User implements UserDetails {
                 ", email='" + email + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", password='" + password + '\'' +
+                ", fcmToken='" + fcmToken + '\'' +
                 '}';
     }
 }

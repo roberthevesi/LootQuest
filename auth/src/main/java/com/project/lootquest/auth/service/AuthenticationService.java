@@ -65,7 +65,11 @@ public class AuthenticationService {
                 )
         );
 
-        return userRepository.findByEmail(input.getEmail())
+        User user = userRepository.findByEmail(input.getEmail())
                 .orElseThrow();
+
+        user.setFcmToken(input.getFcmToken());
+
+        return user;
     }
 }
