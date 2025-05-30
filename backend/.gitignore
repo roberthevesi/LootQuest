@@ -93,3 +93,5 @@ logs/
 *.vscode-workspace.json.vscode-workspace.json.sublime-workspace
 *.vscode-workspace.json.vscode-workspace.json.tmp
 *.vscode-workspace.json.vscode-workspace.json.tmp.*
+
+src/main/resources/firebase/serviceAccountKey.json
