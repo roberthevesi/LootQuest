@@ -10,8 +10,8 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FB_APP_ID,
 };
 
-const app = initializeApp(firebaseConfig);
-const messaging = getMessaging(app);
+initializeApp(firebaseConfig);
+const messaging = getMessaging();
 
 onBackgroundMessage(messaging, ({ notification, data }) => {
   self.registration.showNotification(notification?.title ?? "Notification", {
