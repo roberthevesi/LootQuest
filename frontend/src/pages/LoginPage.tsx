@@ -5,7 +5,6 @@ import "../styles/auth.css";
 import useWindowWidth from "../hooks/useWindowWidth";
 import logo from "../assets/logo.png";
 import mapImage from "../assets/map.png";
-import { requestFcmToken } from "../helpers/firebase";
 
 export default function LoginPage() {
   const screenWidth = useWindowWidth();
@@ -20,8 +19,6 @@ export default function LoginPage() {
     e.preventDefault();
 
     try {
-      const fcmToken = await requestFcmToken();
-
       const response = await fetch("http://localhost:8081/login", {
         method: "POST",
         headers: {
@@ -30,7 +27,7 @@ export default function LoginPage() {
         body: JSON.stringify({
           email: email,
           password: password,
-          fcmToken: fcmToken,
+          fcmToken: localStorage.getItem("fcmToken") ?? "",
         }),
       });
 
