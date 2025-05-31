@@ -1,15 +1,64 @@
 import "../styles/home.css";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import ProfilePanel from "../panels/ProfilePanel";
 import ReportSpotPanel from "../panels/ReportSpotPanel";
-import { MapView } from "../components/MapView";
+import { MapView, MapViewHandle } from "../components/MapView";
 import { Coordinate, getLocationAsync } from "../services/locationService";
 import { NearbyLostItem } from "../types";
 import MapPinMarker from "../props/MapReportPin";
 import MapReportPanel from "../panels/MapReportPanel";
 
+const getCoordinates = async (location: string) => {
+  const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+    location
+  )}`;
+
+  try {
+    const response = await fetch(url, {
+      headers: {
+        Accept: "application/json",
+        "User-Agent": "LootQuest/1.0",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    if (data.length === 0) {
+      console.log("No results found");
+      return null;
+    }
+
+    const { lat, lon } = data[0];
+    console.log(`Coordinates for "${location}":`, lon, lat);
+    return [lon, lat] as Coordinate;
+  } catch (error) {
+    console.error("Error fetching coordinates:", error);
+    return null;
+  }
+};
+
+function debounceAsync<T extends (...args: any[]) => Promise<any>>(
+  fn: T,
+  delay: number
+) {
+  let timeoutId: ReturnType<typeof setTimeout>;
+
+  return (...args: Parameters<T>) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      fn(...args);
+    }, delay);
+  };
+}
+
 export default function HomePage() {
+  const mapRef = useRef<MapViewHandle>(null);
+
   const navigate = useNavigate();
   const location = useLocation();
   const [nearbyLostItems, setNearbyLostItems] = useState<NearbyLostItem[]>([]);
@@ -18,12 +67,16 @@ export default function HomePage() {
   const [showProfile, setShowProfile] = useState(false);
   const [showDropIcon, setShowDropIcon] = useState(false);
   const [showReportSpot, setShowReportSpot] = useState(false);
-  const [coordinates, setCoordinates] = useState<Coordinate>([
-    21.226519, 45.747368,
-  ]);
+  const [myPosition, setMyPosition] = useState<Coordinate>();
+  const [centerPosition, setCenterPosition] = useState<Coordinate>();
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    getLocationAsync().then((response) => setCoordinates(response));
+    getLocationAsync().then((response) => {
+      setMyPosition(response);
+      mapRef.current?.setMyPosition(response);
+      mapRef.current?.setZoomAndCenter(response);
+    });
   }, []);
 
   const handleAddClick = () => {
@@ -32,6 +85,10 @@ export default function HomePage() {
   };
 
   useEffect(() => {
+    if (!myPosition) {
+      return;
+    }
+
     const fetchNearbyLostItems = async () => {
       const token = localStorage.getItem("token");
 
@@ -42,7 +99,7 @@ export default function HomePage() {
 
       try {
         const response = await fetch(
-          `http://localhost:8080/api/v1/items/get-nearby-lost-items?latitude=${coordinates[1]}&longitude=${coordinates[0]}`,
+          `http://localhost:8080/api/v1/items/get-nearby-lost-items?latitude=${myPosition[1]}&longitude=${myPosition[0]}`,
           {
             method: "GET",
             headers: {
@@ -63,7 +120,7 @@ export default function HomePage() {
     };
 
     fetchNearbyLostItems();
-  }, []);
+  }, [myPosition]);
 
   useEffect(() => {
     console.log("Nearby lost items:", nearbyLostItems);
@@ -81,13 +138,39 @@ export default function HomePage() {
     }
   }, [location.state]);
 
+  const zoomToLocation = useMemo(
+    () =>
+      debounceAsync(async (value: string) => {
+        const coords = await getCoordinates(value);
+        if (coords) {
+          mapRef.current?.setZoomAndCenter(coords);
+        }
+      }, 1000),
+    []
+  );
+
   return (
     <div className="page-container">
       <div className="map-container">
-        <MapView center={coordinates} />
+        <MapView ref={mapRef} setCenterPosition={setCenterPosition} />
       </div>
       <div className="search-bar floating-ui">
-        <input type="text" placeholder="Search a location..." />
+        <input
+          type="text"
+          placeholder="Search a location..."
+          value={searchTerm}
+          onChange={(e) => {
+            const value = e.target.value;
+            setSearchTerm(value);
+            if (value.length >= 3) {
+              zoomToLocation(value);
+            } else if (value.length === 0) {
+              if (myPosition) {
+                mapRef.current?.setZoomAndCenter(myPosition);
+              }
+            }
+          }}
+        />
       </div>
       <button
         className="profile-btn floating-ui"
@@ -124,8 +207,8 @@ export default function HomePage() {
       )}
       {showReportSpot && (
         <ReportSpotPanel
-          latitude={coordinates[1]}
-          longitude={coordinates[0]}
+          latitude={centerPosition?.[1] ?? 0}
+          longitude={centerPosition?.[0] ?? 0}
           onClose={() => {
             setShowReportSpot(false);
             setShowDropIcon(false);
@@ -133,7 +216,7 @@ export default function HomePage() {
           onConfirm={() => {
             navigate(
               `/submit-report/${encodeURIComponent(
-                `${coordinates[1]}, ${coordinates[0]}`
+                `${centerPosition?.[1] ?? 0}, ${centerPosition?.[0] ?? 0}`
               )}`
             );
             setShowReportSpot(false);

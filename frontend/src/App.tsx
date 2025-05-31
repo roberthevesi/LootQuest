@@ -62,14 +62,7 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
 
         {/* Protected routes */}
-        <Route
-          path="/home"
-          element={
-            <ProtectedRoute>
-              <HomePage />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/home" element={<HomePage />} />
 
         <Route
           path="/my-lost-items"
