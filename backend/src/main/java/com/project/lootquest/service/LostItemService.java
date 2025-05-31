@@ -33,6 +33,7 @@ public class LostItemService {
     private final S3Service s3Service;
     private final GptService gptService;
     private final JwtService jwtService;
+    private final FcmService fcmService;
 
     @Autowired
     public LostItemService(
@@ -41,7 +42,8 @@ public class LostItemService {
             UserRepository userRepository,
             S3Service s3Service,
             GptService gptService,
-            JwtService jwtService
+            JwtService jwtService,
+            FcmService fcmService
     ) {
         this.lostItemRepository = lostItemRepository;
         this.foundItemRepository = foundItemRepository;
@@ -49,6 +51,7 @@ public class LostItemService {
         this.s3Service = s3Service;
         this.gptService = gptService;
         this.jwtService = jwtService;
+        this.fcmService = fcmService;
     }
 
     Integer getUserIdFromToken(String token) {
@@ -279,8 +282,15 @@ public class LostItemService {
     }
 
     private void notifyUserOfFoundItem(Integer userId, String itemTitle, String photoUrl) {
-        // @Radu.Micea
-        // Implement the logic to notify the user about the found item
+        User user = userRepository.findById(userId);
+        String fcmToken = user.getFcmToken();
+
+        if (fcmToken == null) {
+            return;
+        }
+
+        fcmService.sendToToken(fcmToken, "Item found!", itemTitle + " has been found!", photoUrl);
+
         System.out.println("User " + userId + " has been notified about the found item: " + itemTitle + " with photo URL: " + photoUrl);
     }
 

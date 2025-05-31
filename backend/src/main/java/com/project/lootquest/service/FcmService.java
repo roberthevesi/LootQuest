@@ -10,16 +10,20 @@ public class FcmService {
     public String sendToToken(String token,
                               String title,
                               String body,
-                              Map<String, String> data)
+                              String imageUrl)
             throws FirebaseMessagingException {
+
+        Notification.Builder notificationBuilder = Notification.builder()
+                .setTitle(title)
+                .setBody(body);
+
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            notificationBuilder.setImage(imageUrl);
+        }
 
         Message msg = Message.builder()
                 .setToken(token)
-                .setNotification(Notification.builder()
-                        .setTitle(title)
-                        .setBody(body)
-                        .build())
-                .putAllData(data)
+                .setNotification(notificationBuilder.build())
                 .build();
 
         return FirebaseMessaging.getInstance().send(msg);

@@ -27,7 +27,7 @@ export default function LoginPage() {
         body: JSON.stringify({
           email: email,
           password: password,
-          fcmToken: localStorage.getItem("fcmToken") ?? "",
+          fcmToken: localStorage.getItem("fcmToken"),
         }),
       });
 
