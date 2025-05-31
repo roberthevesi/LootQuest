@@ -11,6 +11,12 @@ import MyLostItemsPage from "./pages/MyLostItemsPage";
 import ItemHistoryPage from "./pages/ItemHistory";
 import SubmitReportPage from "./pages/SubmitReportPage";
 import FoundReportPage from "./pages/FoundReportPage";
+import { getToken, onMessage } from "firebase/messaging";
+import { messaging } from "./firebase/firebaseConfig";
+import { useEffect } from "react";
+import { toast, ToastContainer } from "react-toastify";
+import Message from "./components/Message.tsx";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   useGeographic();
@@ -24,68 +30,93 @@ function App() {
   );
   register(proj4);
 
+  useEffect(() => {
+    const requestPermission = async () => {
+      const permission = await Notification.requestPermission();
+
+      if (permission === "granted") {
+        const fcmToken = await getToken(messaging, {
+          vapidKey:
+            "BNOmGQNdCgZsbwv1sf_2DndWbPNPPP3sMsIoL075xRPcX_YYv7eky0n0fDdTETPmYfauY9QG0WIqw-nzyzMpk7M",
+        });
+        localStorage.setItem("fcmToken", fcmToken);
+      } else if (permission === "denied") {
+        alert("Please allow notification permission.");
+      }
+    };
+
+    requestPermission();
+  }, []);
+
+  onMessage(messaging, (payload) => {
+    toast(<Message notification={payload.notification} />);
+  });
+
   return (
-    <Routes>
-      {/* Public routes */}
-      <Route path="/" element={<Navigate to="/login" />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
+    <>
+      <ToastContainer />
+      <Routes>
+        {/* Public routes */}
+        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
 
-      {/* Protected routes */}
-      <Route
-        path="/home"
-        element={
-          <ProtectedRoute>
-            <HomePage />
-          </ProtectedRoute>
-        }
-      />
+        {/* Protected routes */}
+        <Route
+          path="/home"
+          element={
+            <ProtectedRoute>
+              <HomePage />
+            </ProtectedRoute>
+          }
+        />
 
-      <Route
-        path="/my-lost-items"
-        element={
-          <ProtectedRoute>
-            <MyLostItemsPage />
-          </ProtectedRoute>
-        }
-      />
+        <Route
+          path="/my-lost-items"
+          element={
+            <ProtectedRoute>
+              <MyLostItemsPage />
+            </ProtectedRoute>
+          }
+        />
 
-      <Route
-        path="/item-history/:itemId"
-        element={
-          <ProtectedRoute>
-            <ItemHistoryPage />
-          </ProtectedRoute>
-        }
-      />
+        <Route
+          path="/item-history/:itemId"
+          element={
+            <ProtectedRoute>
+              <ItemHistoryPage />
+            </ProtectedRoute>
+          }
+        />
 
-      <Route
-        path="/my-findings"
-        element={
-          <ProtectedRoute>
-            <MyFindingsPage />
-          </ProtectedRoute>
-        }
-      />
+        <Route
+          path="/my-findings"
+          element={
+            <ProtectedRoute>
+              <MyFindingsPage />
+            </ProtectedRoute>
+          }
+        />
 
-      <Route
-        path="/submit-report/:coordinates"
-        element={
-          <ProtectedRoute>
-            <SubmitReportPage />
-          </ProtectedRoute>
-        }
-      />
+        <Route
+          path="/submit-report/:coordinates"
+          element={
+            <ProtectedRoute>
+              <SubmitReportPage />
+            </ProtectedRoute>
+          }
+        />
 
-      <Route
-        path="/found-report/:itemId"
-        element={
-          <ProtectedRoute>
-            <FoundReportPage />
-          </ProtectedRoute>
-        }
-      />
-    </Routes>
+        <Route
+          path="/found-report/:itemId"
+          element={
+            <ProtectedRoute>
+              <FoundReportPage />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </>
   );
 }
 
