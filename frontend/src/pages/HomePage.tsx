@@ -6,7 +6,6 @@ import ReportSpotPanel from "../panels/ReportSpotPanel";
 import { MapView, MapViewHandle } from "../components/MapView";
 import { Coordinate, getLocationAsync } from "../services/locationService";
 import { NearbyLostItem } from "../types";
-import MapPinMarker from "../props/MapReportPin";
 import MapReportPanel from "../panels/MapReportPanel";
 
 const getCoordinates = async (location: string) => {
@@ -61,7 +60,11 @@ export default function HomePage() {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const [nearbyLostItems, setNearbyLostItems] = useState<NearbyLostItem[]>([]);
+  const [nearbyLostItems, setNearbyLostItems] = useState<NearbyLostItem[]>([
+    // { id: 0, latitude: 46.17844574633315, longitude: 21.303241847089122 },
+    // { id: 1, latitude: 46.17873387082949, longitude: 21.303035853305804 },
+    // { id: 2, latitude: 46.1784368352655, longitude: 21.30419885906923 },
+  ]);
   const [selectedNearbyItem, setSelectedNearbyItem] =
     useState<NearbyLostItem | null>(null);
   const [showProfile, setShowProfile] = useState(false);
@@ -152,7 +155,15 @@ export default function HomePage() {
   return (
     <div className="page-container">
       <div className="map-container">
-        <MapView ref={mapRef} setCenterPosition={setCenterPosition} />
+        <MapView
+          ref={mapRef}
+          setCenterPosition={setCenterPosition}
+          lostItems={nearbyLostItems.map((item) => ({
+            id: item.id,
+            coordinates: [item.longitude, item.latitude],
+            onClick: () => setSelectedNearbyItem(item),
+          }))}
+        />
       </div>
       <div className="search-bar floating-ui">
         <input
@@ -222,14 +233,6 @@ export default function HomePage() {
             setShowReportSpot(false);
             setShowDropIcon(false);
           }}
-        />
-      )}
-
-      {nearbyLostItems.length > 0 && (
-        <MapPinMarker
-          item={nearbyLostItems[0]}
-          position={{ x: window.innerWidth / 2, y: window.innerHeight / 2 }}
-          onClick={(item) => setSelectedNearbyItem(item)}
         />
       )}
 
