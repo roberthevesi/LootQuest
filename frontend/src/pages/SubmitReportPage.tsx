@@ -69,7 +69,6 @@ export default function SubmitReportPage() {
           <h2>Location</h2>
           <p className="coordinates-text">{`${latitude}, ${longitude}`}</p>
           <RangeSlider value={rangeValue} onChange={setRangeValue} />
-          <div className="location-pic-placeholder"></div>
         </section>
 
         <section className="name-section">
@@ -78,7 +77,7 @@ export default function SubmitReportPage() {
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="Enter location name"
+            placeholder="Enter item title"
           />
         </section>
 

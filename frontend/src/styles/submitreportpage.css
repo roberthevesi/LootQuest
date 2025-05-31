@@ -41,15 +41,6 @@
   overflow-wrap: break-word;
 }
 
-.location-pic-placeholder {
-  background-color: white;
-  border: 1px solid #ccc;
-  width: 100%;
-  height: 150px;
-  border-radius: 8px;
-  margin-top: 10px;
-}
-
 input[type="text"],
 textarea {
   width: 100%;
