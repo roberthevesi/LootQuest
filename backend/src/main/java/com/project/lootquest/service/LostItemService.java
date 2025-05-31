@@ -1,10 +1,12 @@
 package com.project.lootquest.service;
 
+import com.google.firebase.messaging.FirebaseMessagingException;
 import com.project.lootquest.dto.AddFoundItemRequestDto;
 import com.project.lootquest.dto.AddLostItemRequestDto;
 import com.project.lootquest.dto.ChatMessageDto;
 import com.project.lootquest.entity.FoundItem;
 import com.project.lootquest.entity.LostItem;
+import com.project.lootquest.entity.User;
 import com.project.lootquest.repository.FoundItemRepository;
 import com.project.lootquest.repository.LostItemRepository;
 import com.project.lootquest.repository.UserRepository;
@@ -253,6 +255,7 @@ public class LostItemService {
             boolean itemMatched = checkItemMatches(lostItemDescription, base64Lost, foundItemDescription, base64Found);
 
             if (!itemMatched) {
+
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Item does not match.");
             }
 
@@ -281,14 +284,15 @@ public class LostItemService {
         }
     }
 
-    private void notifyUserOfFoundItem(Integer userId, String itemTitle, String photoUrl) {
-        User user = userRepository.findById(userId);
-        String fcmToken = user.getFcmToken();
+    private void notifyUserOfFoundItem(Integer userId, String itemTitle, String photoUrl) throws FirebaseMessagingException {
+        Optional<User> user = userRepository.findById(userId);
+        String fcmToken = user.get().getFcmToken();
 
         if (fcmToken == null) {
             return;
         }
 
+        assert fcmService != null;
         fcmService.sendToToken(fcmToken, "Item found!", itemTitle + " has been found!", photoUrl);
 
         System.out.println("User " + userId + " has been notified about the found item: " + itemTitle + " with photo URL: " + photoUrl);
@@ -310,6 +314,10 @@ public class LostItemService {
 
         JSONObject root = new JSONObject(response);
         boolean matchValue = root.getBoolean("match");
+
+        if(!matchValue) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, response);
+        }
 
         return matchValue;
     }
