@@ -32,7 +32,12 @@ const Message: React.FC<{ notification?: NotificationPayload }> = ({
         )}
         <span>{notification.title}</span>
       </div>
-      <div style={{ marginTop: "10px", textAlign: "center" }}>
+      <div
+        style={{
+          marginTop: notification.image ? "0px" : "10px",
+          textAlign: "center",
+        }}
+      >
         {notification.body}
       </div>
     </div>
