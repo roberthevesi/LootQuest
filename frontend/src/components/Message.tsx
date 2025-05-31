@@ -8,17 +8,34 @@ const Message: React.FC<{ notification?: NotificationPayload }> = ({
   }
 
   return (
-    <>
-      <div id="notificationHeader">
+    <div style={{ display: "flex", flexDirection: "column" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-around",
+          alignItems: "center",
+          fontSize: "20px",
+          fontWeight: "bold",
+        }}
+      >
         {notification.image && (
-          <div id="imageContainer">
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              height: "100px",
+              objectFit: "contain",
+            }}
+          >
             <img src={notification.image} width={100} />
           </div>
         )}
         <span>{notification.title}</span>
       </div>
-      <div id="notificationBody">{notification.body}</div>
-    </>
+      <div style={{ marginTop: "10px", textAlign: "center" }}>
+        {notification.body}
+      </div>
+    </div>
   );
 };
 
