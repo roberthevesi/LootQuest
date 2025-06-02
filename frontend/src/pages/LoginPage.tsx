@@ -19,7 +19,7 @@ export default function LoginPage() {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:8081/login", {
+      const response = await fetch(`${import.meta.env.VITE_AUTH_URL}/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

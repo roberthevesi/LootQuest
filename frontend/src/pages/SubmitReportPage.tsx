@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { useState } from "react";
-import "../styles/submitreportpage.css"
+import "../styles/submitreportpage.css";
 import RangeSlider from "../props/RangeSlider";
 
 export default function SubmitReportPage() {
@@ -15,7 +15,7 @@ export default function SubmitReportPage() {
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-        setPhoto(URL.createObjectURL(e.target.files[0]));
+      setPhoto(URL.createObjectURL(e.target.files[0]));
     }
   };
 
@@ -25,34 +25,38 @@ export default function SubmitReportPage() {
       alert("Not authenticated!");
       return;
     }
-  
+
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
     formData.append("latitude", latitude || "");
     formData.append("longitude", longitude || "");
     formData.append("radius", rangeValue.toString());
-  
-    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+
+    const fileInput = document.querySelector(
+      'input[type="file"]'
+    ) as HTMLInputElement;
     if (fileInput?.files && fileInput.files[0]) {
       formData.append("photo", fileInput.files[0]);
     }
-    
-  
+
     try {
-      const response = await fetch("http://localhost:8080/api/v1/items/add-lost-item", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
-      });
-  
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/items/add-lost-item`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        }
+      );
+
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(errorText);
       }
-  
+
       alert("Report submitted!");
       navigate("/home");
     } catch (error: any) {
@@ -93,11 +97,7 @@ export default function SubmitReportPage() {
 
         <section className="photo-section">
           <h2>Photo</h2>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handlePhotoChange}
-          />
+          <input type="file" accept="image/*" onChange={handlePhotoChange} />
           {photo && (
             <img
               src={photo}

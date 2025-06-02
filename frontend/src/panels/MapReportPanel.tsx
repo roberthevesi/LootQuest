@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import { X, Phone, User, FileText, MapPin } from 'lucide-react';
-import '../styles/mapreportpanel.css';
-import { NearbyLostItem } from '../types';
+import { X, FileText, MapPin } from "lucide-react";
+import "../styles/mapreportpanel.css";
+import { NearbyLostItem } from "../types";
 
 interface MapReportPanelProps {
   item: NearbyLostItem;
@@ -16,7 +16,7 @@ export default function MapReportPanel({ item, onClose }: MapReportPanelProps) {
   };
 
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
-    e.currentTarget.style.display = 'none';
+    e.currentTarget.style.display = "none";
   };
 
   return (
@@ -69,10 +69,7 @@ export default function MapReportPanel({ item, onClose }: MapReportPanelProps) {
         </div>
 
         <div className="popup-footer">
-          <button
-            onClick={handleReportFound}
-            className="report-found-button"
-          >
+          <button onClick={handleReportFound} className="report-found-button">
             Report Found
           </button>
         </div>

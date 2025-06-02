@@ -102,7 +102,11 @@ export default function HomePage() {
 
       try {
         const response = await fetch(
-          `http://localhost:8080/api/v1/items/get-nearby-lost-items?latitude=${myPosition[1]}&longitude=${myPosition[0]}`,
+          `${
+            import.meta.env.VITE_BACKEND_URL
+          }/items/get-nearby-lost-items?latitude=${myPosition[1]}&longitude=${
+            myPosition[0]
+          }`,
           {
             method: "GET",
             headers: {

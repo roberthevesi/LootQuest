@@ -28,17 +28,20 @@ export default function RegisterPage() {
     setIsLoading(true);
 
     try {
-      const response = await fetch("http://localhost:8081/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: email,
-          phoneNumber: phoneNumber,
-          password: password,
-        }),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_AUTH_URL}/register`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: email,
+            phoneNumber: phoneNumber,
+            password: password,
+          }),
+        }
+      );
 
       if (!response.ok) {
         if (response.status === 400) {
@@ -51,7 +54,7 @@ export default function RegisterPage() {
         return;
       }
 
-      const userData = await response.json();
+      await response.json();
 
       alert("Registration successful! Please login with your credentials.");
       navigate("/login");
