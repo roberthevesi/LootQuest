@@ -47,10 +47,6 @@ export default function LoginPage() {
       if (data.token) {
         localStorage.setItem("token", data.token);
 
-        if (data.user.username) {
-          localStorage.setItem("username", data.user.username);
-        }
-
         if (data.user.phoneNumber) {
           localStorage.setItem("phoneNumber", data.user.phoneNumber);
         }

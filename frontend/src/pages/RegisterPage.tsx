@@ -11,7 +11,6 @@ export default function RegisterPage() {
   const isMobile = screenWidth < 768;
   const navigate = useNavigate();
 
-  const [username, setUsername] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

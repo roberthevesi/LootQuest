@@ -12,7 +12,6 @@ export default function ProfilePanel({ onClose }: ProfilePanelProps) {
   const [animateIn, setAnimateIn] = useState(false);
   const [closing, setClosing] = useState(false);
 
-  const [username, setUsername] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
 
@@ -22,7 +21,6 @@ export default function ProfilePanel({ onClose }: ProfilePanelProps) {
   }, []);
 
   useEffect(() => {
-    setUsername(localStorage.getItem("username") || "N/A");
     setPhoneNumber(localStorage.getItem("phoneNumber") || "N/A");
     setEmail(localStorage.getItem("email") || "N/A");
   }, []);
@@ -46,7 +44,6 @@ export default function ProfilePanel({ onClose }: ProfilePanelProps) {
       <div className="profile-content">
 
         <div className="info-section">
-          <p><strong>Name:</strong> {username}</p>
           <p><strong>Phone Number:</strong> {phoneNumber}</p>
           <p><strong>Email:</strong> {email}</p>
         </div>
