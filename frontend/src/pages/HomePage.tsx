@@ -7,6 +7,8 @@ import { MapView, MapViewHandle } from "../components/MapView";
 import { Coordinate, getLocationAsync } from "../services/locationService";
 import { NearbyLostItem } from "../types";
 import MapReportPanel from "../panels/MapReportPanel";
+import profileIcon from "../assets/profile_icon.svg";
+import plusIcon from "../assets/plus_icon.svg";
 
 const getCoordinates = async (location: string) => {
   const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
@@ -193,7 +195,7 @@ export default function HomePage() {
         onClick={() => setShowProfile(true)}
       >
         <img
-          src="src/assets/profile_icon.svg"
+          src={profileIcon}
           alt="Porfile Icon"
           width="100%"
           height="100%"
@@ -205,7 +207,7 @@ export default function HomePage() {
         onClick={handleAddClick}
       >
         <img
-          src="src/assets/plus_icon.svg"
+          src={plusIcon}
           alt="Plus Icon"
           width="100%"
           height="100%"

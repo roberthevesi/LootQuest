@@ -73,14 +73,6 @@ export default function RegisterPage() {
           <img src={logo} alt="Logo" className="logo" />
           <form className="auth-form" onSubmit={handleRegister}>
             <input
-              type="text"
-              placeholder="Name"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-              disabled={isLoading}
-            />
-            <input
               type="tel"
               placeholder="Phone Number"
               value={phoneNumber}
