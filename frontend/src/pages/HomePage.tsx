@@ -9,6 +9,7 @@ import { NearbyLostItem } from "../types";
 import MapReportPanel from "../panels/MapReportPanel";
 import profileIcon from "../assets/profile_icon.svg";
 import plusIcon from "../assets/plus_icon.svg";
+import locationPinIcon from "../assets/location_pin.svg";
 
 const getCoordinates = async (location: string) => {
   const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
@@ -194,33 +195,19 @@ export default function HomePage() {
         type="button"
         onClick={() => setShowProfile(true)}
       >
-        <img
-          src={profileIcon}
-          alt="Porfile Icon"
-          width="100%"
-          height="100%"
-        />
+        <img src={profileIcon} alt="Profile Icon" width="100%" height="100%" />
       </button>
       <button
         className="add-btn floating-ui"
         type="button"
         onClick={handleAddClick}
       >
-        <img
-          src={plusIcon}
-          alt="Plus Icon"
-          width="100%"
-          height="100%"
-        />
+        <img src={plusIcon} alt="Plus Icon" width="100%" height="100%" />
       </button>
 
       {showProfile && <ProfilePanel onClose={() => setShowProfile(false)} />}
       {showDropIcon && (
-        <img
-          src="src/assets/location_pin.svg"
-          alt="Dropping Icon"
-          className="drop-icon"
-        />
+        <img src={locationPinIcon} alt="Dropping Icon" className="drop-icon" />
       )}
       {showReportSpot && (
         <ReportSpotPanel
